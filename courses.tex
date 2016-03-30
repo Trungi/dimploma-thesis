@@ -1,281 +1,93 @@
-\chapter{Courses 2 system}
-
-\label{kap:courses} % id kapitoly pre prikaz ref
-
-\section{Introduction}
-% TODO: culik
-\paragraph{}
-In 2010, a new approach of the learning was implemented in the web design course in our faculty. A blog based learning. This approach is based on blog posts about the lectures content written by the students. These blogs are published and they are rated by the teachers and the students. The ratings of the blog are included in the final subject result. This approach forces the students to study lectures more precisely and they have to read the blog posts of their classmates, which make the students focused on the discussed problems.\cite{culik}
-
-\paragraph{}
-Since the blog portal \cite{rejda} was running in the faculty, there was a space to publish the blog posts. Unfortunately, there was not a system to process the reviews and ratings of these posts. The necessity of this system occurred. One possible solution was to integrate mentioned functionality into existing blog portal, other one was to create a separate system with a possible blog integration. For our purpose there was choosen the second solution. The goal of a standalone system development was to create the customizable modular Learning management system. Such system should o er the blog portal integration (and/or provide an API for an integration with the other systems), implement the basic learning management system requirements (course management, user management, content management, etc.) and o er a logical and user friendly structure for the next developers.
-
-% TODO uz je moje
-\paragraph{}
-The Courses system was developed as the result of the bachelor thesis from 2013 called Integrated learning management system.\cite{culik} Courses was deployed to the production usage in 2013 and 4 courses were running on Courses system for two semesters. The system was used by 130 users in system and 6 teachers. Although the system was designed as a fully modular system with an integration with blog portal, there appeared some flaws during the production usage.
-
-\paragraph{}
-Courses 2 is a second iteration of learning management system developed at the Comenius University by Jakub Culik.  This system aims at modularity with easy module management and usability for students and teachers. During its development it has been already used to teach multiple courses and increasingly gained popularity among teachers. After finishing of base development in autumn of 2014 multiple enhancements of this system and particulary assignments module were needed to be implemented.
+\chapter{Courses 2 LMS}
 
 
 \paragraph{}
-Purpose of this chapter is to provide information about this system as it was implemented, with focus on assignments module so that we could later explain our contribution to this system.
- 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{courses/screenshot.png}
-    \caption{Screenshot of Courses 2 main page}
-    \label{courses_main}
-\end{figure}
+Now, that we have understaning of how CodeIgniter works, we can continue with description of Courses 2 system, as it was developed by Jakub Culiks work \cite{culik}. Motivation of this chapter is to describe this system as it was implemented before this work, explain motivation for creating a new learning management system (LMS) and bring some technical details of Courses 2 LMS. This chapter is considered as an introduction to our work and may be used to differentiate our work from previous works.
 
-
-\section{Overview}
+\section{Motivation}
 \paragraph{}
-Aim of the Courses 2 system is to provide all functionality splitted into modules. These modules can then be easily extended an improved separately, which helps reduce number of bugs and issues. After finished development of this system, 3 modules were introduced \cite{culik}.
+Courses 2 system was developed during spring and winter of 2015 with development team led by Jakub Culik. This team was able to create a simple, customizable and modular learning management system which is already used at our faculty. Until the end of summer semester of 2016, 32 courses with total of 200 students were using this system.
 
 \paragraph{}
-Courses 2 base module provide basic functionality in logging of user and basic course selection as in image \ref{courses_main}. Notes module, on the other hand provides functionality of static content, such as lectures, labs, project tasks and information about courses. The role of results module is to provide scores for all students attending a course. The last one, assignments module is the purpose of this work, so it is described in it's own part.
-
-\section{Assignments module}
-\paragraph{}
-Purpose of the assignments module is to provide student and teacher interface for management, submission and reviewing of assignments. This is the most complex module but we found that is still lacking some functionality and therefore must be extended.
-
-\subsection{Student's part}
-\paragraph{}
-This module allows students to submit their solutions of assignments and review other students. We found interface of this part counterintuitive so in our future work we decided to refactor it and provide dashboard. This decision was also made after numerous complaints of other students.
-
-\subsection{Teacher's part}
-
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{courses/rounds.png}
-    \caption{Assignment management in courses 2 system}
-    \label{courses_assignment_admin}
-\end{figure}
-
+Need for this system started in 2010, when a new aproach of the learning was introduced in the web design course at our faculty \cite{culik}. Each student had to publish a multiple blog posts which where then evaluated by his classmates and teachers of the course. Ratings were then projected into his final grade from this course. This approach led students to study more about topics they were interested in and were related to this subject. With this approach, students were also forced to discuss these problems and got greater insight into blog topics.
 
 \paragraph{}
-Teacher's part consists of two main functionalities: creating/editing of assignments and evaluating of student submisions. It is also important to note, that assignments module provides also interface for student reviews of other students work as is described in \cite{culik}.
+Used blog portal \texttt{blog.matfyz.sk} was also developed at our faculty in 2008 by Martin Rejda \cite{rejda}, so there were many options improve this system and to modify it to our needs. For example, blog portal was modified to allow students to implement and submit their own blog layout in XSLT. Hovewer, there were still some missing features like system for reviewing of these blog articles and discussions so the need for another system arose \cite{culik}. As a solution, new system, Courses was created \cite{culikbc}.
 
 \paragraph{}
-Creating and editing of assignments is provided by interface shown on \ref{courses_assignment_admin}. This interface tries to be minimalistic and intuitive but we found that it must be improved. It is important to note that each assignments can have multiple rounds, multiple review settings, notes and can be set to be FILE or URL.
+This system was developed as a part of bachelor's thesis in 2013 \cite{culikbc} and was running 4 courses for one year \cite{culik}. After this time, it seemed clear that this system has to be completely redesigned and implemented from scratch. A new system had to be modular, scalable and well designed. And so, Courses 2 was born.
+
+\section{Semantics}
+\paragraph{}
+Courses 2 system architecture can be divided into two parts: system part and modules. This division is required for maintaining this system modular and scalable. Now, let's look at each part.
+
+\subsection{System}
+\paragraph{}
+System part is mostly responsible for "background stuff". Models and controllers extend standard CodeIgniter classes and there is only a few standalone libraries. All files of this part are located in \texttt{application/} folder and comply with standard CodeIgniter MVC flow. All libraries of system part are loaded once on each request.
 
 \paragraph{}
-The second part of teacher's administration is reviewing of user submissions. Teacher can evaluate a submission after any user submits a submission of assignment and results are than converted into notes module. Along submissions, teacher is also allowed to submit evaluation of student reviews.
+Main goal of this part is to share all data to every component. For example, after user login, user information have to be avaible for each module. Since Course and Layout information are shared too, it is placed here as well. This part is also responsible to decide which modules has to be run on specific request and printing their outputs on the correct place in application layout.
 
+\subsection{Modules}
+\paragraph{}
+After system initialized all required classes, correct modules has to be run. Currently, there are 5 modules installed: \texttt{Core}, \texttt{Assignments}, \texttt{Quiz}, \texttt{Notes}, \texttt{Results}. Each module has different purpose and we will later explain \texttt{Assignments} throughoutly as it is main focus of this work. Other modules work similar and are not referenced by us, so we do not consider their description important for this work. It can, hovewer, be found in previous works \cite{culik}.
 
-
-\section{Implementation}
+\subsection{Layout}
+\paragraph{}
+Layout is managed by system part of this application. CodeIgniter default layout system is not sufficient for modularity, so it had to be replaced by a new one. Main problem was that each part of layout can be rendered by different module, which is decided at run-time. So page structure was divided into 4 different parts, each with its own rendering.
 
 \paragraph{}
-The whole system is split into modules so it could be easily extended or rewritten. At first we need to describe core of this system, CodeIgniter framework and then we can focus on design patterns and assignments module description.
-
-\subsection{CodeIgniter framework}
-CodeIgniter is an Application Development Framework - a toolkit - for people who build web sites using PHP  \cite{codeigniter}. One of it's goals is to provide exceptional performance of web applications along with minimum complexity and fast development. CodeIgniter was born from ExpressionEngine \cite{elislab} in 2006 and since then, it increasingly gained popularity among PHP developers. In 2008 CodeIginiter became industry leader in an enviroment saturated with PHP frameworks \cite{elislab} and in 2014 CodeIgniter v 2.2 was released.
-
-\paragraph{}
-This framework is licensed under custom Elislab license, which is basicaly an open source license with only a few restrictions \cite{elislablicense}. We provide a copy of this license in medium attached to this work.
-
-\subsection{MVC design pattern}
-In an Object oriented programming (OOP) programmers often run into problems with application complexity and maintanance of code. As application becomes larger and more robust, it is ofter harder to add or modify existing features. Modifying of complex classes and unclear implementation can cause a lot of software bugs. On the other way, design patterns aim to provide reusable soulutions of common problems in software engineering and reduce this complexity by splitting functionality into specific classes with a single purpose. One of the most important desing patterns is Model
-View-Controller, which is the performs as the core of the CodeIgniter framework.
-
-\paragraph{}
-Model-View-Controller (MVC) design pattern was first created in 70's by SmallTalk programmers. Since that time, MVC design idiom has become a commonplace, especially in object oriented systems \cite{mvc}. We specify the motto of this pattern as to "Stop data, program logic and presentation layers being mixed up together".
-
-\paragraph{}
-To do so, MVC has to split application functionality into three layers: models, views and controllers. Each part plays specific, distinctive, non-overlapping function. This also enables programmers to easily replace these layers and extend functionality. To fully understand this pattern, we need to look at each layer separately with context to CodeIgniter framework.
-
-\subsubsection{Model}
-\paragraph{}
-Model is basicaly a class where all of the business logic is stored. Basic model operations are create, update, read, delete (often referenced as CRUD) of application data plus handling of external services (such as API calls). In CodeIgniter model is the only MVC layer supposed to perform operations with database. CRUD operations are forbidden outside models to prevent programming bugs and to keep simplicity of the code base.
-
-\paragraph{}
-In Courses 2, models are connected to MySQL database which stores all the data about courses, users and teachers. There are also models, which use Oauth2 protocol to communicate with external services to authorize users from other matfyz portals. In this way, there is no more need to store passwords in MySQL database because log in of user is handled outside of application and this improves security.
-
-\begin{lstlisting}
-class Admin_model extends MY_Model
-{
-    function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function get_assignment($id)
-    {
-        $where = array (
-            'course_id' => $this->cid,
-            'id' => $id,
-        );
-        return $this->db->get_where('assignment', $where)->row_array();
-    }
-
-    public function add_assignment($name)
-    {
-        $input = array (
-            'name'      => $name,
-            'course_id' => $this->cid
-        );
-        return $this->db->insert('assignment', $input);
-    }
-
-    public function update_assignment($id, $name)
-    {
-        $where = array (
-            'id'        => $id,
-            'course_id' => $this->cid
-        );
-        $update = array (
-            'name'      => $name,
-            'course_id' => $this->cid
-        );
-        return $this->db->where($where)->update('assignment', $update);
-    }
-    
-    .... (another 200 lines of code)
-\end{lstlisting}
-
-\paragraph{}
-Example above presents a model of assignment in Courses application. This model is used by all of the controllers and serves as the only code accessing or editing assignment in database.
-
-\subsubsection{View}
-Views, unlike controllers and models are not supposed to contain any logic. In object-oriented terms, these will consist of sets of classes which give us "windows (such as GUI, CLI or API) \cite{mvc}. Althought views are very often graphical, they don't have to be. Example of view from Courses application could be something like this:
-
-\begin{lstlisting}
-<h3>Assignments</h3>
-
-<?php foreach ($assignments as $assignment) : ?>
-    <div class="alert alert-info">
-        <a href="<?= $course->course_base() ?>assignments/<?= $assignment['id'] ?>">
-            <?= $assignment['name'] ?>
-        </a>
-    </div>
-<?php endforeach; ?>
-
-<?php if (!$assignments) : ?>
-    <div class="alert alert-warning">
-        <?= lang('assignments_found') ?>
-    </div>
-<?php endif; ?>
-\end{lstlisting}
-
-\subsubsection{Controller}
-A controller is an object that manipulates a view \cite{mvc}. Over-simplifying a bit, controller knows all the enviroment settings (operating system, display resolution, ...) and according to these loads data from models, perform operations on them and then they are sended to a view. Controller knows the views but views does not. The same applies to models. Example of controller connecting previous model with view could be:
-
-\begin{lstlisting}
-    public function run()
-    {
-        $assignments = $this->assignments_model->get_course_assignments();
-
-        for ($i=0; $i<count($assignments); $i++) {
-            $notes = $this->assignment_note_model->get_assigment_notes($assignments[$i]['id']);
-            $assignments[$i]['notes'] = $notes;
-        }
-
-        $data = array (
-            'assignments' => $assignments,
-        );
-
-        $this->layout->set_content('../modules/assignments/views/user/assignments', $data);
-    }
-\end{lstlisting}
-
-\paragraph{}
-As we can see, in controller, data are loaded from models, then this layer can perform some operations over them and after all, result is sent to model which is then rendered.
-
-\subsubsection{MVC summary}
-\paragraph{}
-Although MVC was originaly developed for desktop computing \cite{mvc} it is mostly used to build web applications. This fact is reflected in most frameworks and in CodeIgniter too. Splitting the application in three separate layers can bring simplicity, code reusability and easily switchable GUIs.
-
-\section{HMVC design pattern}
-\paragraph{}
-Using MVC design pattern is excellent for building small applications. Hovewer, huge application building on pure MVC pattern brings also some disadvantages \cite{culik}. For example, large sets of views, models and controllers could be a point of confusion and failure for many programmers. In case of larger projects, it is very needed to bring order to MVC. Solution to this can be Hierarchical Model-View-Controller design pattern (HMVC) \cite{hmvc}.
-
-\paragraph{}
-Hierarchical Model-View-Controller design pattern (HMVC) is a direct extension of the MVC pattern that aims to solve mainly scalability issues mensioned earlier. HMVC was first described in a blog post entitled HMVC: The layered pattern for developing strong client tiers on the JavaWorld web site in July 2000 \cite{hmvc}. In summary, HMVC is a collection of MVC triads operating as one application. Each of this triads is treated as individual and can be rendered on it's own. This resolves into greater scalability, code reusability and most importantly, resolves the problem with hudge views in large projects.
-
-\paragraph{}
-To successfuly implement HMVC, it is crucial for application to be broken into systems \cite{hmvc}. Each system gets it's own views, models and controllers and is fully in control of it's own part and nothing else. In Courses 2 system, these systems are called modules (assignments, note, quiz, ..). Thanks to HMVC model, in our further work, we will only edit assignments module and can ommit descriptions and refactoring of other modules.
-
-\paragraph{}
-We also must note, that CodeIgniter framewor, core of the Course 2 system is not directly supporting HMVC design pattern. This improvement was implemented thanks to Jakub Culik \cite{culik}.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.7\textwidth]{courses/hmvc.png}
-    \caption{Scheme of HMVC design pattern}
-    \label{fig:awesome_image}
-\end{figure}
-
-
-\section{Comparision of other learning management systems}
-\paragraph{}
-In this section, we consider important to describe alternative learning management systems to Courses 2. Although many projects exists, none of them met our criterions and considerations. This section is important to realize why we had to write our own learning management system that is easily extendable and usable.
-
-\subsection{Moodle}
-\paragraph{}
-Moodle is a free, online Learning Management system enabling educators to create their own private website filled with dynamic courses that extend learning, any time, anywhere \cite{moodlesite}. This system is trying to deliver full palette of functionalities, tools, modules, language support with focus on security and usability. It was developped by its Lead Developer Martin Dougiamas in 1999 with first public release in 2002. Since than moodle quickly gained popularity among famous universities like Oxford (2004) and became leading and award-winning open source LMS in 2007. \cite{moodlesite}
-
-% TODO: Delete
-\paragraph{}
-Moodle as a learning platform can enhance existing learning environments. As an E-learning tool, Moodle has a wide range of standard and innovative features such as calendar and Gradebook. Moodle is a leading virtual learning environment and can be used in many types of environments such as education, training and development and in business settings \cite{moodlesite}
-
-
-
-\paragraph{}
-Hovewer, there are few considerations to make. Over the time, Moodle has grown to be huge piece of software with hundreds of thousands lines of code and large number of extensions. Other side of this is that this makes future development very hard and time-consuming. The next disadvantage is that new pieces of code are hardly maintained and require skilled developers.
-
-\paragraph{}
-The next thing Moodle is currently not supporting are assignment rounds, assignment reviews and team assignments. There may be some plugins for this functionality but we do not consider them useful or maintained. We also found that writing plugins for moodle is not an easy task. Hovewer, on the end of this work we are going to present a Moodle plugin for mirroring URLs and saving mirrored files as user's submission.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\textwidth]{courses/moodle.png}
-    \caption{Screenshot of Comenius University Moodle}
-    \label{moodle_pic}
-\end{figure}
-
-\subsubsection{Moodle Workshop}
-\paragraph{}
-Workshop is a peer assessment activity with many options. Students submit their work via an on line text tool and attachments. There are two grades for a student: their own work and their peer assessments of other students' work
-\cite{moodleworkshop}. This plugin is avaible on official Moodle site and can work with many versions of Moodle. 
-
-\paragraph{}
-We found, that this plugin aims to support same functionality as we in Moodle. We appreciate this opportunity but does not consider it sufficient for our purposes.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.7\textwidth]{courses/moodleworkshop.png}
-    \caption{Moodle workshop plugin}
-    \label{moodle_workshop}
-\end{figure}
-
-\subsection{Blackboard}
-\paragraph{}
-Blackboard Learn (previously the Blackboard Learning Management System), is a virtual learning environment and course management system developed by Blackboard Inc. It is Web-based server software which features course management, customizable open architecture, and scalable design that allows integration with student information systems and authentication protocols. It may be installed on local servers or hosted by Blackboard ASP Solutions. Its main purposes are to add online elements to courses traditionally delivered face-to-face and to develop completely online courses with few or no face-to-face meetings. \cite{blackboard}
-
-\paragraph{}
-According to research, Blackboard received 41 percent market share as of fall 2013 among other learning management system. This makes Blackboard the most used tool in industry
-
-\paragraph{}
-Hovewer, Blackboard brings many disadvantages. Mainly, Blackboard is not avaible as open source software and is sold under custom license. Other issues with Blackboard LMS are several legal issues, including faulty patent rights claims. We consider this facts to be enough to not use Blackboard.
-
-\subsection{Desire2Learn}
-\paragraph{}
-Desire2Learn was founded in 1999 by president and CEO John Baker \cite{d2l}. This LMS aims to be online teaching and learning platform that’s easy, flexible, and smart. This technology is used by more than 1,100 clients and 15 million learners in higher education, K–12, healthcare, government, and the enterprise sector.
+Courses 2 is build to offer one, root layout for all of the pages. It is not needed to create multiple different layouts in learning management system such as this. So there is just one, root layout, which is located in \texttt{application/views} directory of the project. This layout can be easily changed but this is not main focus of this work.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{courses/d2l.png}
-    \caption{Desire2Learn Screenshot}
-    \label{d2l}
+    \includegraphics[width=0.95\textwidth]{images/courses-labelled.png}
+    \caption{Courses 2 screenshot}
+    \label{courses2screen}
 \end{figure}
 
 \paragraph{}
-Hovewer, Desire2Learn is not an option for our purposes. This system is commercial and not open source so it is imposible to use it for our future work.
+As we can see on figure \ref{courses2screen}, root layout was split into 4 different parts, each with specific purpose and rendered independently. Each numbered part is rendered by selected module, the rest is rendered by system. This screenshot was rendered using \texttt{Notes} module as it is showing content of a lecture. Part number 4 is reserved for notifications, such as new assignment was created or so.
 
-\subsection{Conclusion}
+\section{Implementation}
+
+technicke detaily - databaza a sracky
+
+\subsection{HMVC extension in CodeIgniter}
+\paragraph{}
+Now, let's focus on hierarchical model-view-controller design pattern again. We indicated before this pattern plays the main role in implementation of Courses 2. It is done so that each module has it's own MVC flow which is then merged by System part. This approach si not directly supported by CodeIgniter, so changes had to be made.
 
 \paragraph{}
-We presented multiple alternative learning management systems. All of them were robust, secure and maintained systems hovewer the complexicity was fairly great so we consider developing our own LMS to be the best option. The next important fact in our decision process was that many of these LMS are not licensed under an open source license.
+To do so, in our predecessive work CodeIgniter Modular Extensions \cite{modularextensions} was selected. This extension is licenced as open-source and can be freely used and distributed. One of the reasons for usage of this extensions was that in CodeIgniter we can’t call more than 1 controller per request. Therefore, to achieve HMVC, we have to simulate controllers \cite{modularextensions}. 
+
+\paragraph{}
+Modular extensions allow us to call subcontrollers in controllers, but these subcontrollers must extend \texttt{MX\_Controller} class instead of \texttt{MI\_Controller} class. Another difference is that all autoload files has to  be specified in subcontroller and are no longer autoloaded by default. This differences are shown on listing \ref{modularcontroller}.
+
+\begin{lstlisting}[label={modularcontroller}, caption={Module controller}]
+<?php     
+class Module_controller extends MX_Controller 
+{
+    $autoload = array(
+        'helper'    => array('escape', 'form'),
+        'libraries' => array('email'),
+    );
+}
+\end{lstlisting}
+
+\paragraph{}
+With this extension, all modules has are placed in \texttt{application/modules} directory and can be called by base CodeIgniter controller. To some degree, they can also communicate with each other, but it is not a good practice since modules aims to be separate.
+
+\subsection{Oauth}
+
+
+
+\section{Assignments Module}
+\paragraph{}
+Now, we will describe Assignments module, whose development aims to be core of this work. We will provide description as it was, before publishing this work and before any change to module was made. We consider this section to be important for diferentiating our work from what has been done.
+
+\paragraph{}
+Originaly, assignments module was developed for submitting blog posts with ability for users to review them. It also provides multiple types of interfaces for managing student homeworks, such as file or URL submissions.
+
+ucitelska a studentska cast
+nejake screenshoty
+ukazky implementacie

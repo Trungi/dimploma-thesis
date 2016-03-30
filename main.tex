@@ -10,30 +10,64 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{float}
-\usepackage{listings}
+\usepackage{listings,xcolor}
 \usepackage[english]{babel} % vypnite pre prace v anglictine
 \linespread{1.25} % hodnota 1.25 by mala zodpovedat 1.5 riadkovaniu
 \usepackage{xcolor}
 \usepackage{textcomp}
+\usepackage{inconsolata}
 
-\lstset{frame=tb,
-  language=PHP,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{green},
-  stringstyle=\color{blue},
-  basicstyle=\tiny,
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3,
+% Definitions of listings
+\definecolor{dkgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{dkblue}{rgb}{0,0,.6}
+\definecolor{dkyellow}{cmyk}{0,0,.8,.3}
+
+\lstset{
+  language        = php,
+  basicstyle      = \scriptsize\ttfamily,
+  keywordstyle    = \color{dkblue},
+  stringstyle     = \color{red},
+  identifierstyle = \color{dkgreen},
+  commentstyle    = \color{gray},
+  emph            =[1]{php},
+  emphstyle       =[1]\color{black},
+  emph            =[2]{if,and,or,else},
+  emphstyle       =[2]\color{dkyellow}}
+
+\usepackage{courier}
+\lstset{
+    basicstyle=\scriptsize\ttfamily,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    tabsize=2,
+    extendedchars=true,
+    breaklines=true,
+    keywordstyle=\color{red},
+    frame=b,
+    showspaces=false,
+    showtabs=false,
+    xleftmargin=17pt,
+    framexleftmargin=17pt,
+    framexrightmargin=5pt,
+    framexbottommargin=4pt,
+    %showstringspaces=false,
+    %escapeinside={}{}
+  language        = php,
+  keywordstyle    = \color{dkblue},
+  stringstyle     = \color{dkyellow},
+  identifierstyle = \color{black},
+  commentstyle    = \color{gray},
+  emph            =[1]{var, const, abstract, 
+                        protected, private, public,
+                        static, final, extends, implements,
+                        global, class, function, try, catch, new},
+  emphstyle       =[1]\color{red},
 }
-
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
+% end of listings
 
 % -------------------
 % --- Definicia zakladnych pojmov
@@ -221,6 +255,8 @@ Slovenský abstrakt: TODO
 \newpage 
 
 \tableofcontents
+\lstlistoflistings
+\listoffigures
 
 % ---  Koniec Obsahu
 
@@ -230,7 +266,8 @@ Slovenský abstrakt: TODO
 
 \newpage 
 
-\listoffigures
+% TODO: UNCOMMENT
+% \listoffigures
 
 % ---  Koniec Zoznamov
 
@@ -240,8 +277,14 @@ Slovenský abstrakt: TODO
 \input introduction.tex 
 
 \part{Background}
+\input mvc.tex
+\input codeigniter.tex
 \input courses.tex
-
+\part{Implementation}
+\input peer_review.tex
+\input team_projects.tex
+\input mirroring.tex
+\input other.tex
 \input zaver.tex
 
 % -------------------
