@@ -49,11 +49,7 @@ Courses 2 is build to offer one, root layout for all of the pages. It is not nee
 \paragraph{}
 As we can see on figure \ref{courses2screen}, root layout was split into 4 different parts, each with specific purpose and rendered independently. Each numbered part is rendered by selected module, the rest is rendered by system. This screenshot was rendered using \texttt{Notes} module as it is showing content of a lecture. Part number 4 is reserved for notifications, such as new assignment was created or so.
 
-\section{Implementation}
-
-technicke detaily - databaza a sracky
-
-\subsection{HMVC extension in CodeIgniter}
+\section{HMVC extension}
 \paragraph{}
 Now, let's focus on hierarchical model-view-controller design pattern again. We indicated before this pattern plays the main role in implementation of Courses 2. It is done so that each module has it's own MVC flow which is then merged by System part. This approach si not directly supported by CodeIgniter, so changes had to be made.
 
@@ -77,17 +73,95 @@ class Module_controller extends MX_Controller
 \paragraph{}
 With this extension, all modules has are placed in \texttt{application/modules} directory and can be called by base CodeIgniter controller. To some degree, they can also communicate with each other, but it is not a good practice since modules aims to be separate.
 
-\subsection{Oauth}
-
-
-
 \section{Assignments Module}
 \paragraph{}
 Now, we will describe Assignments module, whose development aims to be core of this work. We will provide description as it was, before publishing this work and before any change to module was made. We consider this section to be important for diferentiating our work from what has been done.
 
 \paragraph{}
-Originaly, assignments module was developed for submitting blog posts with ability for users to review them. It also provides multiple types of interfaces for managing student homeworks, such as file or URL submissions.
+Originaly, assignments module was developed for submitting blog posts with ability for users to review them. Hovewer this idea shifted to more complex module which provides multiple types of interfaces for managing student homeworks, file or URL submissions and student reviews. Now let's divide this module into student and teacher's part.
 
-ucitelska a studentska cast
-nejake screenshoty
-ukazky implementacie
+\subsection{Student's part}
+\paragraph{}
+Student's part does not offer a lot of functionality, it is designed to be as simple as possible. In fact, we considered this approach bad since a lot of students were confused about user interface and later had to redesign whole module in this work. As seen on figure \ref{assstudent}, this interface is too minimalistic and student can often miss important deadlines.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/assstudent.png}
+    \caption{Student's part of assignment module}
+    \label{assstudent}
+\end{figure}
+
+\paragraph{}
+There are basicaly three possibilities: student can submit his homework assignment with added support for multiple assignment rounds. This means that each assignments can have multiple round, each of them can have different specifications. For example in first round, student must complete 50\% of selected tasks and in second round all of the tasks have to be completed. Second important functionality is reviewing of each round. After student submits a submission, other students can see it and write their feedback to this student. These feedback are often also evaluated and projected into final grade of the course. Thirth possibility is to view evaluations from teacher and classmates.
+
+\subsection{Teacher's part}
+\paragraph{}
+This interface is way more complex. It offers multiple screens, some of them are presented on figure \ref{teachereval} and \ref{teacherrounds}. This interface also provides two important functionalities: assignment and review operations (create assignment, assign reviews on submitted assignments, delete assignment, edit assignment) and evaluation (assignments and reviews).
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/teacherrounds.png}
+    \caption{Teacher's administration of assignment rounds}
+    \label{teacherrounds}
+\end{figure}
+
+\paragraph{}
+On figure \ref{teacherrounds} is shown assignment round management. It is possible to set name of the assignment (to diferentiate multiple assignments), set it's description (which may provide some instructions for students), type (URL of FILE), submission deadlines and blindness settings. This system also allows double blind assignments. It is also possible to set student review deadlines, questions and ratings.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/teachereval.png}
+    \caption{Teacher's evaluation of submitted assignments}
+    \label{teachereval}
+\end{figure}
+
+\paragraph{}
+On figure \ref{teachereval} we can see teacher's evaluation screen. Each round of an submitted assignment is presented on its own screen. The teacher is allowed to submit his own comment to this assignment and evaluate this assignment. There are also shown other student's reviews for this particular round of assignments. 
+
+\section{Implementation}
+\paragraph{}
+Whole module is located in \texttt{application/modules/assignment} folder with file structure as described by CodeIgniter Modular Extensions. Now let's go through code flow of this module.
+
+\paragraph{}
+At first, as soon as system part of Courses 2 finds out that assignment module has to be run, routing of this module takes part. All routes are located in \texttt{application/modules/assignment/routes.php}. This script also loads correct course from database and acts as a "bootloader". After correct controller is decided from routing, it is instantiated and run.
+
+\begin{lstlisting}[label={assrouting}, caption={Routing in assignments module for administrator}]
+if (is_admin())
+{
+    switch (url_segment(3))
+    {
+        case false:
+            $route['assignments'] = 'user/assignments';
+            break;
+        case 'admin':
+            $route['assignments'] = 'admin/assignments';
+            break;
+        case 'reviews':
+            $route['assignments'] = 'admin/manage_reviews';
+            break;
+        default:
+            $route['assignments'] = 'admin/manage_assignments';
+    }
+
+    return;
+}
+\end{lstlisting}
+
+\paragraph{}
+After end of Jakub Culik's \cite{culik} work, there were 6 controllers in this module. 3 of them were used for teacher's administration and 3 were used for student's part. All controllers extend \texttt{Module\_Controller} class and implement \texttt{Module\_Interface}, which is special superclasses for all modules controllers. Otherwise they comply with standard development habbits.
+
+\paragraph{}
+Models are located in \texttt{application/modules/assignment/models/} and views in \texttt{application/modules/assignment/views}. As seen on \ref{assviews}, since there is none template engine used, views easily get pretty complicated. There's a lot of programming and scripting languages mixed together which can bring great chaos. On listing \ref{assviews} we can recognize HTML, PHP, PHP translations or even raw text mixed up together. We consider this a bad practice and propose usage of template engine system.
+
+\begin{lstlisting}[label={assviews}, caption={Example of view in assignments module}]
+<h2><?= lang('rating') ?>: <?= $submission['round_name'] ?></h2>
+<br>
+<b><?= lang('for_submission') ?>:</b> <a href="<?= $submission['submission'] ?>"><?= $submission['submission'] ?></a><br>
+<b>By:</b> <?= $submission['user_name'] ?><br><br>
+\end{lstlisting}
+
+
+\section{Database Model}
+Database model is presented in appendices of this work.
