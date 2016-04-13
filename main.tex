@@ -16,6 +16,7 @@
 \usepackage{xcolor}
 \usepackage{textcomp}
 \usepackage{inconsolata}
+\usepackage[toc,page]{appendix}
 
 \usepackage{todonotes}
 %\usepackage[disable]{todonotes}
@@ -355,10 +356,14 @@ Slovenský abstrakt: TODO
 %Zoznam príloh je súčasťou obsahu.
 %
 %\addcontentsline{toc}{chapter}{Appendix A}
-%\input AppendixA.tex
+%\input appendixA.tex
 %
 %\addcontentsline{toc}{chapter}{Appendix B}
 %\input AppendixB.tex
+\begin{appendices}
+\input appendixA.tex
+\input appendixB.tex
+\end{appendices}
 
 \end{document}
 
