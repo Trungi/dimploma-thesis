@@ -1,15 +1,15 @@
 \chapter{Team assignments}
 
-In this chapter, we are describing motivation, development, support and usage of team assignments. We decided to introduce this concept into educatioal process during the spring of 2015 on some curses, such as Modern Approaches to Webdesign or Algorithms and Data Structures. We finished specifications during summer of 2015 and by start of the winter semester   Courses 2 Assignments module was reimplemented to support this change. After that time, this module was ready but we continued to support it's further development to met all of the students needs.
+In this chapter, we are describing motivation, development, support and usage of team assignments. We decided to introduce this concept into educatioal process during the spring of 2015 on some courses, such as Modern Approaches to Webdesign or Algorithms and Data Structures. We finished specifications during summer of 2015 and by start of the winter semester   Courses 2 Assignments module was reimplemented to support this change. After that time, this module was ready but we continued to support it's further development to met all of the students needs.
 
-This work is also a subject of other researchers at our faculty such as Veronika Dropcova's research \cite{dropcova}. In this work, we focus on semantics and implementations whereas other researchers are focusing on teaching aspects.
+This work is also a subject of other researchers at our faculty such as Veronika Dropcova's research \cite{dropcova}. In this work, we focus on semantics and implementations whereas other researchers are focusing on pedagogical aspects of this work.
 
 
 \section{Motivation}
 
 Computer Science students are often taught many different types of algorithms, matematics and programmings languages. This is very beneficial to them since many hard skills will be reqired in their future career. But on the other side of this, these students are lackings skills in teamwork, constructive critisism, the ability of self\-reflection or job evaluation.  These skills are essential in ther future jobs or science career but still none or very little effort is put to teach students these skills. 
 
-This is why, in this chapter, we are introducing new concepts of assignments for students.  In this chapter, we focuse on implementing and usage of one of these concepts, team assignments with peer and team review. With this term, we mean an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism. Each of this mentioned concept is described in detail in following subsections.
+This is why we are introducing new concepts of assignments for students.  In this chapter, we focuse on implementing and usage of one of these concepts, team assignments with peer and team review. With usage of this term, we mean an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism. Each of this mentioned concept is described in detail in following subsections.
 
 
 \section{Semantics and implementation}
@@ -18,7 +18,7 @@ Now, we we move to semantics and implementation of team assignments in Courses 2
 \subsection{Representation}
 
 \subsubsection{Database}
-Final representation of teams in database is shown on Figure \ref{assignmentdatabase} in Appendix A. On this figure, elements added in this work are marked red, original elements are black. We decided to represent a team with two tables \texttt{assignment\_team} and \texttt{assignment\_team\_member}.
+Final representation of teams in database is shown on Figure \ref{assignmentdatabase} in Appendix A. On this figure, elements added in this work are marked red, original elements are black. We decided to represent basic team with two tables \texttt{assignment\_team} and \texttt{assignment\_team\_member}.
 
 The first one is used only for pairing the team with specific assignment and retrieving its name. Elements represented by this table are checked for duplicity so there can not be two teams with the same name in one assignment.
 
@@ -29,7 +29,7 @@ There are also tables \texttt{assignment\_round\_team\_question}, \texttt{assign
 We also had to alter old database table of \texttt{assignment} and \texttt{assignment\_round} and add columns to specify team creation, limits, deadlines and reviews. These names are hovewer self\-explanatory.
 
 \subsubsection{Models}
-For managing teams, we created \texttt{Assignment\_team\_model} located in \texttt{application/modules/assignments/models/} directory. This model offers a handful of methods for creating, updating, deleting and managing teams.
+For managing teams, we created \texttt{Assignment\_team\_model} located in \\ \texttt{application/modules/assignments/models/} directory. This model offers a handful of methods for creating, updating, deleting and managing teams.
 
 \begin{lstlisting}[caption={Method for accepting team invites},label={lst:teaminvite}]
 public function accept_invite($invite_id, $user_id)
@@ -48,17 +48,25 @@ public function accept_invite($invite_id, $user_id)
 }
 \end{lstlisting}
 
-On Listing \ref{lst:teaminvite} we can see method for accepting team invites in team model. As we minimal database model with a little redundancy, these methods can be kept very simple. 
+On Listing \ref{lst:teaminvite} we can see method for accepting team invites in team model (these will be explained later). As we minimal database model with a little redundancy, these methods can be kept very simple.
 
-For managing peer reviews, we created \texttt{Team\_reviews\_model}. This model is used both for administration and submissions of peer reviews. We will explain team reviews in Section \ref{sec:teamreview}.
+For managing team reviews, we created \texttt{Team\_reviews\_model}. This model is used both for administration and submissions of peer reviews. We will explain team reviews in Section \ref{sec:teamreview}.
 
-We also had to refactor \texttt{Assignments\_model} and \texttt{Admin\_model} as they could not work with the team data. These refactorings often changed behaviours of these models because the original version of module did not expected to be extended this way. We will provide an example in Subsection \ref{sec:peerreview} when speaking of peer review. This was among most impacted and problematic parts as it was deeply wired into whole system and any changes would be problematic.
+We also had to refactor \texttt{Assignments\_model} and \texttt{Admin\_model} as they could not work with the team data. These refactorings often changed behaviours of these models because the original version of module did not expected to be extended this way. We will provide an example in Subsection \ref{sec:peerreview} when speaking of peer review. This was among most impacted and problematic parts as it was deeply wired into whole system and any changes could cause a lot of bugs.
 
 \subsubsection{Controllers}
+Controllers for team projects are split into two categories. \texttt{User} and \texttt{Admin} category.
+
+User controllers are located in \\ \texttt{application/modules/assignment/controllers/user} folder and are used only for user actions. For purposes of this work, we had to refactor \texttt{Assignment} controller which previously managed only submitting of submission. Now its functionality is extended and this controller is also used for managing team changes (create, invite, accept invite, leave team). Then, we added \texttt{Team\_Review} controller which serves as the manager for team reviews.
+
+Admin controllers are located in \\ \texttt{application/modules/assignment/controllers/admin} folder and also had to be refactored extensively. We created \texttt{Manage\_team\_reviews} controller which serves as manager of team reviews. There was already done controller for managing peer reviews called \texttt{Manage\_reviews} about which we will explain later. It is also worth mentioning \texttt{Assignments} controller which serves as managing class for assignments (creating, editing, evaluating) and also for team management (create, edit, edit members)
 
 \subsubsection{Views}
+Finally, views of team assignments can be found in \\ \texttt{application/modules/assignment/views} directory. These are also divided into two groups user and admin part, each with corresponding folder. For our purposes, we created a many more new views but these are relatively easy to understand.
 
 \subsection{Team assignment creation}
+We will now go through team assignment flow, as we designed it. During this, we will explain also the problems we encountered and some solutions.
+
 The teacher can create a team assignment in teacher's assignment administration interface. This interface is the same as for creating a normal assignment. The only difference is that teacher must allow the assignment to be team assignment, set deadlines for team forming and fill, how many students he expects to be in each team. The teacher can set lowest and highest number of students in each group without any limitations. This settings are then stored in \texttt{assignment} database table under values \texttt{is\_team}, \texttt{team\_min\_members}, \texttt{team\_max\_members}, \texttt{team\_forming\_closes}.
 
 \subsection{Team forming}
@@ -191,5 +199,5 @@ And finally, on the bottom of the page we show results of peer reviews. These re
 
 Final results of the evaluations has to be, because of Courses 2 box modularity, put into different module of Courses 2, called Results Module. We see this inefficient for the teacher and also for students so there is still a space for future improvements.
 
-\section{Results}
-We described how we build, implemented and used team project extension for Courses 2 Assignments module. This extension was used for teaching multiple courses in winter semester of 2015 and is ready for future use in other courses.
+\section{Conclusion}
+TODO: Should I write a conclusion for this chapter?
