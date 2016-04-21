@@ -1,2 +1,74 @@
-\chapter{Assignments mirroring}
+\chapter{Web assignment mirroring}
+
+In this chapter, we are describing implementation and workflow of assignments mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers.
+
+\section{Motivation}
+As it was said, students in some courses taught in the Courses 2 Learning Management System allow the students to submit their solutions as an URL address of their web site. This approach brings many advantages, for example students are allowed to choose the programming language and framework that suits them the best. For example, Modern Approaches to Webdesign course is not directly requesting the students to use specific languages rather than choose their own and let them focus on semantics rather than on learning a new tools.
+
+The main disadvantage of this approach is that these submitted projects can not be hosted on servers at our Faculty for multiple reasons. We currently do not offer hostings other than for PHP programming language but many students choose different versions of this languages or go with other choices such as Python or Ruby on Rails. These require full virtual server for every students and may be hard to maintain for the teachers. Therefore we allowed students to host these web design projects on their own servers.
+
+This approach is very beneficial for students and is a result of a long evolution. We want to continue using this approach but we needed some tools to improve it. For example, after these web design projects are submitted, students still can develop and edit their projects before or after evaluation by the teacher which is not a good thing. We also want to back up these projects for future use, for example to show them as examples for next year students.
+
+So, we decided to implement mirroring of these assignments submitted by URLs. Our goal is to preserve most of the functionality and store them on our server as plain HTML, CSS or JavaScript documents. We do not want to execute script written in server side programming language, we only want to store the generated files.
+
+This is however a very hard problem to implement well. Therefore it is needed to mention, that we do not expect these functionality to work on complicated sites written in modern JavaScript frameworks such as Angular or Node.js since most of the students wont use them or we can restrict usage of modules which could prevent us to backing up these sites correctly.
+
+There is also one more thing we needed to do. Web pages often include logging in with username and password. First version of our algorithm could not back up pages shown after logging in which we saw as a major problem. We therefore decided to implement an algorithm, which could do it. Our presented algorithm can log in with username and password provided by the student and back up sites shown after log in also.
+
+In the next sections, we describe process of mirroring these assignments, explain many problems we had to overcome, important details and provide some examples.
+
+\section{Initialization}
+First part of assignments mirroring process is submitting an assignment by the student. This is done as usual, in assignments module of the Courses 2 Learning Management System. The students submits his URL of an assignment which is then stored in database as a submission in \texttt{assignment\_submission} table as seen on Appendix A. This is the only action done directly by Courses 2 system. For reasons explained in \ref{sec:technology} we decided to build rest of this algorithm as a separate module which can be published on different server or virtual server.
+
+\section{Mirroring}
+After the submission is uploaded, it is ready to be mirrored. In this section we at first describe technology we used, modulation we choose and then explain thru the flow of this algorithm. Mirroring part of this algorithm is build as a separate module located in \texttt{webclone/cron} directory.
+
+\subsection{Technology, pros and limitations}
+\label{sec:technology}
+For building a mirroring module, we decided to use PHP programming language. First versions of our mirroring were developped in Python, which provided excellent performance and fast development but it brought many more dependencies to system as a whole so we decided to use technologies we were already using. 
+
+Usage of PHP brings some disadvantages that must be overcomed. Most importantly, PHP is not build for supporting of asynchronous tasks. Usual flow of PHP application is that browser sends a request, web server starts PHP application and sends its result back to the browser. This flow, however can not be used for web site mirroring. Mirroring is a kind of task, which has to be executed asynchronously, independently of a browser or any request. It also has to be finished regardless of length of a task.
+
+There is one commonly used solution for this problem, \texttt{cron} unix command. \texttt{Cron} is the system process which will automatically perform tasks for you according to a set schedule. The schedule is called the crontab, which is also the name of the program used to edit that schedule \cite{crontab}. We can set a \texttt{cron} command, to execute a given PHP endpoint every minute and set maximum running time of a script for one minute. This way we can constantly execute background jobs needed for mirroring.
+
+Second important problem is, that with usage of cron, at least one of PHP workers is occupied. Web server we use, Apache 2, creates limited number of PHP workers for a website. We do not want to create any problems, such as lack of workers for requests for Courses 2, so we decided to create a separate module which takes care of mirroring. This module can be built as a separate virtual host (see \cite{apachepocket}) on a server with its own workers and processing. This way, we prevent any deadlocks in system.
+
+We also build separate module for serving of these mirrrored websites, which will be described in \ref{sec:serving}. This module is also separated for security reasons and must have its own domain. Since JavaScript can access any cookies located under the same domain, and this JavaScript is created by the students, on their original website and mirrored on orurs, we could not run this module under \texttt{courses.matfyz.sk} domain. It could lead to a potential huge security flaw.
+ 
+
+explain why php, cron - preco tieto technologie
+ako to musime cronovat
+ako sme to rozdelili do dvoch casti a ako sa to da cronovat
+rozdelenie - cron je fajn mat zvlast
+viewer - security reasons
+
+\subsection{Downloading}
+pouzivame curl
+
+\subsection{Crawling and parsing}
+Parsing XML, HTML, XHTML, CSS links
+parsing urls
+ako handlujeme rozlicne status kody
+
+\subsection{File processing}
+
+rewriting urls
+database representation
+filesystem representation
+saving
+
+\subsection{Automated login}
+\label{sec:login}
+cookies, curl
+
+\subsection{Filesystem}
+\label{sec:filesystem}
+1 pag
 TODO
+
+\subsection{Settings}
+nastavenia
+
+\section{Serving files}
+\label{sec:serving}
+htaccess
