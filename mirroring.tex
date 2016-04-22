@@ -194,26 +194,79 @@ These files are simple to handle because we do not need to process them. Only ac
 
 An intereseting improvement would be parsing and processing of JavaScript files. These files may also send another requests on the original site which currently can not be mirrored.
 
+%Parsing XML, HTML, XHTML, CSS links
+%parsing urls
+%ako handlujeme rozlicne status kody
+%rewriting urls
+%database representation
+%filesystem representation
+%saving
 
-Parsing XML, HTML, XHTML, CSS links
-parsing urls
-ako handlujeme rozlicne status kody
-rewriting urls
-database representation
-filesystem representation
-saving
+% TODO: Settings
 
 \subsection{Automated login}
 \label{sec:login}
 cookies, curl
 
 
-\subsection{Settings}
 
 
-\section{Serving files}
+\section{Serving documents}
 \label{sec:serving}
-Now, that we have finished web crawling and processing, we may move to publishing the documents we have mirrored under our servers.
+In this last section, we explain an algorithm for viewing mirrored documents on our servers. Firstly, we need to focus on URL management.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/urls.png}
+    \caption{Explanation of URL paths in serving of documents}
+    \label{fig:urls}
+\end{figure}
 
+On Figure \ref{fig:urls} is shown how our serving script decides, which document to serve. First part of the URL is script location, then there is website slug. This slug is generally random generated UID to distinct between mirrored web pages. Then, the thirth part is a query for mirrored single document of a web page.
 
+Now, the question is, how we can implement this URL management. As we described earlier, we can use Apache 2 Mod\_rewrite. This mod is generally used for rewriting URLs on server side and with a configuration script, we may force Apache 2 to always execute \texttt{index.php} script in our script directory. Used configuration, in form of \texttt{.htaccess} file is shown on Listing \ref{lst:htaccess}
+
+\begin{lstlisting}[caption={Example of .htaccess for Apache 2 mod\_rewrite},label={lst:htaccess}]
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+\end{lstlisting}
+
+The last part of document serving is hidden inside \texttt{index.php} script saved in \texttt{webclone/server/index.php}. This script is executed for every request and its purpose is to extract website slug and query from document from an URL of request. Then, script loads requested data from database and tries to simulate the original response from the mirrored website even with its original status code.  This behaviour is shown on Listing \ref{lst:servingMirrored}.
+
+\begin{lstlisting}[caption={Serving of mirrored documents},label={lst:servingMirrored}]
+
+$uri = $_SERVER['REQUEST_URI'];
+
+// delete first '/'
+$uri = substr($uri, 1);
+
+// split to slug and url
+$pos = strpos($uri, '/');
+$slug = substr($uri, 0, $pos);
+$url = substr($uri, $pos+1);
+
+$db = new Database();
+$result = $db->getDocument($slug, $url);
+
+// handle 200 OK
+if ($result['http_code'] == 200) {
+    $file =  WEBCLONE_ROOTDIR . $result['site_slug'] . '/' . $result['document_slug'];
+    header("Content-Type: ".$result['content_type']);
+    readfile($file);
+    die();
+} 
+// handle REDIRECT
+elseif ($result['http_code'] == 301 or $result['http_code'] == 302) {
+    header("Location: ".$result['redirect_location']);
+    die();
+}
+// handle ERROR
+else {
+    header("HTTP/1.0 404 Not Found");
+    die();
+}
+\end{lstlisting}
