@@ -1,4 +1,5 @@
 \chapter{Web assignment mirroring}
+\label{sec:mirroring}
 
 In this chapter, we are describing implementation and workflow of assignments mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers.
 
@@ -187,7 +188,7 @@ Secondly we must replace all of the links with a new link, as we describe in sec
 \subsubsection{CSS files}
 Catch with CSS files is, that these files can include another CSS files using \texttt{@include} directive. Therefore, we need to create a parser of CSS files, which can find these directives and find links, which we need to process next. This can be done using regular expressions and PHP default function \texttt{preg\_match()} and \texttt{preg\_match\_callback()}.
 
-After we find a new \texttt{@import} directive in CSS, we create a new \texttt{webclone\_document} in our database with this link (by this we mean part of the link relative to root URL as we described earlier) and with \texttt{done} tag set to 0. This ensures that this document will be processed also. And then we can save this CSS file.
+After we find a new \texttt{@import} directive in CSS, we create a new \texttt{webclone\_document} in our database with this link (by this we mean part of the link relative to root URL as we described earlier) and with \texttt{done} tag set to 0. This ensures that this document is going to be processed also. And then we can save this CSS file.
 
 \subsubsection{Other files}
 These files are simple to handle because we do not need to process them. Only action needed is to save them on the disk and then serve them for each request on our mirrored site unchanged.
@@ -204,14 +205,61 @@ An intereseting improvement would be parsing and processing of JavaScript files.
 
 % TODO: Settings
 
-\subsection{Automated login}
+\subsection{Automated loggging in}
 \label{sec:login}
-cookies, curl
+After our mirroring algorithm was implemented, we started looking into its improvements. Projects submitted by students on some courses ofter include logging in of a user and for this reason, our mirroring possibilities were reduced. We wanted to mirror as many web documents as possible, so we decided to find a solution.
 
+\subsubsection{Limitations}
+Our first versions of automated logging in were automatically looking for and parsing login form, then tried to fill in an username and password and submit the form. Quickly, we realised that this was not a way to go. We quit parsing the form, and instead we let the student to fill in this information while submitting his assignment.
 
+For automated loggging in to work, the student must submit username, password and auth URL on his web page. By auth URL we mean an URL, where an authorization process takes place. It is usually where login form action (\texttt{<form action="AUTH URL"/>} ) leads.
 
+\subsection{The process}
+If the user provided required information, automated logging in must take place before start of the mirroring. We, at first need to retrieve a Cookie file, which serves as user identification, as explained in Chapter \ref{sec:cookies}. For retrieving of this cookie, we can use a Curl library with proper settings. As seen on Listing \ref{lst:login}, we perform a request on Auth URL and then parse the cookie from response headers.
 
-\section{Serving documents}
+\begin{lstlisting}[caption={Retrieving of a Cookie with Curl library},label={lst:login}]
+public function login($loginUrl) {
+    $username           = $this->task->website->login;
+    $password           = $this->task->website->password;
+
+    //init curl
+    $ch = curl_init();
+	
+	// set curl parameters
+    curl_setopt($ch, CURLOPT_URL, $loginUrl);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, 'username='.$username.'&password='.$password);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false );
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+
+    //execute the request (the login)
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    // find cookies
+    $cookie = '';
+    $pattern = '/Set-Cookie:(.*?)\n/';
+
+    if (preg_match_all($pattern, $data, $result)) {
+        $cookie = implode(';', $result[1]);
+    } else {
+        $cookie = null;
+    }
+
+    return $cookie;
+}
+\end{lstlisting}
+
+After the Cookies are parsed, we save them and use for any subsequent request. As seen on Listing \ref{lst:cookieFill} we may add Cookie to a Http request header and we appear as logged in during any subsequent request.
+
+\begin{lstlisting}[caption={Adding Cookie to HTTP header using Curl},label={lst:cookieFill}]
+curl_setopt($curl, CURLOPT_COOKIE, $this->task->website->cookie);
+\end{lstlisting}
+
+\section{Serving of mirrored documents}
 \label{sec:serving}
 In this last section, we explain an algorithm for viewing mirrored documents on our servers. Firstly, we need to focus on URL management.
 
