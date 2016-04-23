@@ -6,20 +6,9 @@ some unnecessary details here which could also be omitted (e.g. routing,
 autoloading, etc. (Not sure though -- depends on how much we want build on
 top of these also in the following chapters)}
 
+CodeIgniter is an Application Development Framework -- a toolkit -- for people who build web sites using PHP  \cite{codeigniter}. One of its goals is to provide exceptional performance of web applications along with minimum complexity and fast development. CodeIgniter was born from ExpressionEngine \cite{codeigniter} in 2006 and since then, it increasingly gained popularity among PHP developers. In 2008 CodeIginiter became industry leader in an enviroment saturated with PHP frameworks \cite{codeigniter} and in 2014 CodeIgniter v 2.2 was released. 
 
-\minor{MH: $\downarrow$ use proper dash ``--''\\
-       ``it's'' $\to$ ``its''}
-
-CodeIgniter is an Application Development Framework - a toolkit - for people who build web sites using PHP  \cite{codeigniter}. One of it's goals is to provide exceptional performance of web applications along with minimum complexity and fast development. CodeIgniter was born from ExpressionEngine \cite{elislab} in 2006 and since then, it increasingly gained popularity among PHP developers. In 2008 CodeIginiter became industry leader in an enviroment saturated with PHP frameworks \cite{elislab} and in 2014 CodeIgniter v 2.2 was released.
-
-
-This framework is licensed under custom Elislab license, which is basicaly an open source license with only a few restrictions \cite{elislablicense}. We provide a copy of this license in medium attached to this work.
-
-\minor{MH: $\uparrow$ it's not needed to mention this here, really}
-
-In this chapter, we will present a short guide of CodeIgniter request and response processing. Full user-guide and documentation can be found on CodeIgniter official website \cite{codeigniter}.
-
-\assignment{MH: $\uparrow$ and why this selection exactly?}
+In this chapter, we will present a short overview of CodeIgniter request and response processing with explanation of MVC and HMVC design patterns for purposes of Chapter \ref{sec:courses}, Chapter \ref{sec:teamprojects}, respectively Chapter \ref{sec:other}.
 
 \section{Request and response flow}
 
@@ -31,79 +20,35 @@ In this chapter, we will present a short guide of CodeIgniter request and respon
 \end{figure}
 
 
-To understand how CodeIgniter works, let's look at processing of HTTP requests in this framework. CodeIgniter uses Apache2  module \texttt{mod rewrite}. This allows to be firstly processed \texttt{index.php} file as seen on image \ref{codeigniter_flow}. Purpose of this script is to load configuration of whole application, load routes, cache and other classes. It is provided by CodeIgniter framework and should not be changed (only for configuration purposes).
+To understand how CodeIgniter works, we have to look at processing of HTTP requests. CodeIgniter uses Apache2  module \texttt{mod\_rewrite}. This ensures, that all requests are handled to \texttt{index.php} script as seen on image \ref{codeigniter_flow}. Purpose of this script is to load configuration of the whole application and other classes. This file is provided by CodeIgniter framework and should not be changed (only for configuration purposes).
 
-\minor{MH: $\uparrow$ improve English, e.g.\ ``This allows\ldots''}
-\assignment{MH: what are routes and what cache? This is not clear
-here\ldots You need to write more systematically}
-
-
-To process HTTP request, router must decide correct operation over it. If a cache file exists, it is sent directly to the browser, bypassing the normal system execution \cite{codeigniter}. Before the application controller is loaded, the HTTP request and any user submitted data is filtered for security.
-
-\minor{MH: $\uparrow$ check the articles (here but also elsewhere): ``The
-purpose'', ``a HTTP request'', ``the router'', ``the correct operation'',\ldots}
-\assignment{MH: $\uparrow$ again, what router, what is the normal
-operation? what cache file? What submitted data? This is all very unclear
-to the reader yet}
-
-In the next step, routing takes place. Each module of application must have it's own routes defined as follows:
+Before any of the user written code is loaded, the HTTP request and any user submitted data is filtered for security. To process HTTP request, router must decide the correct operation over it. Each module of application must have it's own routes defined as follows:
 
 \begin{lstlisting}[basicstyle=\small,caption={CodeIgniter routing}]
 $route[course/(:num)] = "courses/$1";
 \end{lstlisting}
 
+The application takes list of all routes and applies the one of which regexp pattern matches the request URL. After this operation, proper controller (to be defined in the next subsection) is selected, instanciated and method \texttt{run()} of this controller is run.
 
-The application takes list of all routes and applies the one of which regexp pattern matches the request URL. After this operation, proper controller (that must extend \texttt{CI\_ CONTROLLER} class) is selected, instanciated and method \texttt{run()} of this controller is run.
+\section{Model-View-Controller}
+For software to be usefult, it has to interact with something. This could be another computer or process, or the interaction could be with people. So, there are interfaces. In modern applications, more effort often goes into development of usable interface than in other tasks. On the other side, our software needs to acces and store its data and perform operations on them.
 
+Purpose of this section is, at first, to explain Model-View-Controller (MVC) design pattern, which is a simple and widespread way for solving this problem. We also aim to explain how MVC is implemented in CodeIgniter with examples.
 
-This controller loads data from models, can perform some operations over them and then data are sent directly to view. The finalized View is rendered then sent to the web browser to be seen. If caching is enabled, the view is cached first so that on subsequent requests it can be served instantly.
+In an Object Oriented Programming (OOP) programmers often run into problems with application complexity and maintanance of code. As application becomes larger and more robust, it is ofter harder to add or modify existing features. Modifying of complex classes and unclear implementation can cause a lot of software bugs. On the other way, design patterns aim to provide reusable soulutions of common problems in software engineering and reduce this complexity by splitting functionality into specific classes with a single purpose. One of the most important desing patterns is Model View-Controller, which is the performs as the core of the CodeIgniter framework.
 
-\assignment{MH: $\uparrow$ now here a few things are finally properly
-explained. The problem above was that you were referring to things as if
-the reader should already be aware of them\ldots}
-\minor{MH: $\uparrow$ English must be improved also here}
-\minor{MH: $\uparrow$ notice the mismatch between the code font in the code
-listing, and the code font in the text\ldots This is not good, this should
-be synced}
+Model-View-Controller (MVC) design pattern was first created in 70’s by SmallTalk programmers. Since that time, MVC design idiom has become a commonplace, especially in object oriented systems \cite{deacon2009model}. Motto of this pattern is specified as to "Stop data, program logic and presentation layers being mixed up together".
 
-\section{Configuration and loading}
+\assignment{MH: $\uparrow$ I believe Jakub has found some reference to the
+original source of the MVC pattern? Check in his thesis, pls}
 
-\assignment{MH: $\downarrow$ why CI uses them? Why we have defined them?
-(Explain this before you go into the details)} 
+To do so, MVC has to split application functionality into three layers: models, views and controllers. Each part plays specific, distinctive, non-overlapping function. This also enables programmers to easily replace these layers and extend functionality. Now, we look at each layer.
 
-CodeIgniter also adds support configuration classes. These classes are located in \texttt{application/config} folder with possibility of creating multiple application enviroments. We have defined three of these enviroments, each for a different purpose: development(\texttt{localhost}), test (\texttt{devcourses.matfyz.sk}) and production (\texttt{courses.matfyz.sk}) . In this configs, all settings for database access, Oauth, PHP interpreter and other enviroment dependent variables must be located. 
-
-\begin{lstlisting}[basicstyle=\small,caption={Database configuration for development enviroment}]
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = 'root';
-$db['default']['database'] = 'courses';
-$db['default']['dbdriver'] = 'mysql';
-$db['default']['dbprefix'] = '';
-\end{lstlisting}
-
-\minor{MH: $\uparrow$ you don't refer to this listing anywhere}
-
-
-Another important feature of CodeIgniter is autolading of resources. Major drawback of development in PHP is that application must be instantiated, interpreted and run each time for every request. For optimalization purposes, we do not want each time to instantiate all of the application classes, just the ones we need. Also, it is often annoying to import many classes in controllers or models. Elegant solution for these problems is resource autoloading, which is provided as a CodeIgniter core functionality. In \texttt{config/autoload.php} we can specify all classes or paths we want to autoload and CodeIgniter will import them when application needs them.
-
-
-\section{Demonstration of Model-View-Controller}
-Now that we have enough knowledge of CodeIgniter background processing, we can focus on development. In this section, we will provide examples and demonstrate development in this framework.
 
 \subsection{Model}
+The model is where all the business logic of an application is kept \cite{phpmvc}. This can mean anything from usage of third-party services via APIs to database access in order to fulfill applications business requirements. If applications needs to read or write any data, all the operations must be performed in this layer. For purposes of this work, models will contain CRUD (Create-Read-Update-Write) operations with Courses database model.
 
-\minor{MH: $\downarrow$ This is a minor thing, but two lines above you said
-that we now know everything needed and now you say we must first explain
-active records -- you're contradicting yourself}
-
-We cannot start explaining models without writing about active records. CodeIgniter uses a modified version of the Active Record Database Pattern. This pattern allows information to be retrieved, inserted, and updated in your database with minimal scripting. In some cases only one or two lines of code are necessary to perform a database action. CodeIgniter does not require that each database table be its own class file. It instead provides a more simplified interface. \cite{codeigniter} This interface might seem similar to many ORM mappers.
-
-\assignment{MH: $\uparrow$ now you didn't actually explained how active
-records work, you said that it's similar to other ORM mappings. But this is
-not enough, especially after you said that you need to explain it\ldots}
-
-\minor{MH: $\uparrow$ the cite above cannot stand between two sentences}
+We cannot explain models in CodeIgniter without writing about Active Records. Active Records allows information to be retrieved, inserted, and updated in your database with minimal scripting. In some cases only one or two lines of code are necessary to perform a database action. CodeIgniter does not require that each database table be its own class file. It instead provides a more simplified interface\cite{codeigniter}. This interface might seem similar to many ORM mappers but it is actually a different concept. Active Records does not map data model into objects but rather provide an abstraction over it.
 
 \begin{lstlisting}[label={model}, caption={Article model}]
 class Article_model extends CI_Model
@@ -124,18 +69,15 @@ class Article_model extends CI_Model
 }
 \end{lstlisting}
 
+As we can see on Listing \ref{model}, each model has to extend \texttt{CI\_Model} class, which is the base class for each model and provides active records functionality. We also can not forget to call \texttt{parent::\_\_construct()} in our constructor.
 
-
-As we can see on listing \ref{model}, each model has to extend \texttt{CI\_Model} class, which is the base class for each model and provides active records functionality. We also can not forget to call \texttt{parent::\_\_construct()} in our constructor.
-
-\minor{MH: $\uparrow$ capitalize: Listing~2.3, Figure~3.4, Table~2.5, etc.}
-
-This is just an example of very simplified model, whose only purpose is to load one article with specified \texttt{id} from database. This file should be located in folder \texttt{application/models} and named \texttt{article\_model.php}.   Now, let's focus on views.
+This is just an example of very simplified model, whose only purpose is to load one article with specified \texttt{id} from database. This file should be located in folder \texttt{application/models} and named \texttt{article\_model.php}.
 
 \assignment{MH: $\uparrow$ it's much better to provide some high level
 overview of an example as the first thing.}
 
 \subsection{View}
+The view, as opposed to model, is where all of the user interface elements are kept \cite{phpmvc}. Very important rule is that models are just templates without any logic whatsoever. For purposes of our work, views will be only PHP templates, which directly generates HTML, CSS and JavaScript responses.
 
 \begin{lstlisting}[label={view}, caption={Article view}]
 <html>
@@ -153,15 +95,14 @@ overview of an example as the first thing.}
 
 \minor{MH: $\uparrow$ you don't refer to this listing anywhere}
 
-All views are placed in \texttt{application/views} folder. Views are mostly
-HTML files with some PHP formatting code. We do not put any logic inside
-views. As we said, this view is just HTML with one PHP variable inside. How
-can we fill this variable? This is the time, when controller steps in.
+Example of a view is shown on Listing \ref{view}.  As seen on this listing, this view mostly contain HTML structure with a few place where PHP variables are placed. In general, views are mostly HTML files with some PHP formatting code without any logic whatsoever. In context of CodeIgniter, all views are placed in \texttt{application/views} folder.
 
-\assignment{MH: $\uparrow$ again, put some explanation before the listing}
+After we have explained models and views, it is obvious, we need a layer to connect them.
 
 \subsection{Controller}
-Controllers must extend \texttt{CI\_CONTROLLER} class. It is a base class which provides basic functionality for application management, such as view and models loading, routing or request/response management. To put our example to work, we have to write a controller like this:
+The controller is the component that connects models and views together \cite{phpmvc}. Over-simplifying a bit, controller knows all the enviroment settings (operating system, display resolution, ...) and according to these loads data from models, performs operations with them and then the results are sent to a view. Controller in general knows the views but views does not. The same applies to models.
+
+In CodeIgniter, controllers must extend \texttt{CI\_CONTROLLER} class. It is a base class which provides basic functionality for application management, such as view and models loading, routing or request/response management. To put our example to work, we have to write a controller like this:
 
 \begin{lstlisting}[label={controller}, caption={Article controller}]
 <?php
@@ -183,7 +124,4 @@ class Article extends MY_Controller
 \end{lstlisting}
 
 
-Now, let's explain what we did in listing \ref{controller}. At first, we had to make a \texttt{\_\_construct} method with \texttt{parent} call. This will instantiate controller basic functionality. In method called \texttt{show()} we at first got an ID of article. This ID comes from accessed URL. Full URL route to this controller would be \texttt{domain.com/article/show/:id}, where \texttt{:id} serves as specified ID. In the next step we used call from our model, which is autoloaded and then we filled this data to our view. And voila, building applications with CodeIgniter is simple!
-
-\minor{MH: $\uparrow$ Improve English: ``we made a call to our model''}
-
+Example of a controller is shown on Listing \ref{controller}. At first, the controller has to call \texttt{\_\_construct} method with \texttt{parent} call. This instantiates controller basic functionality. After initializing, method \texttt{show()} is called automatically by CodeIgniter. As a first thing, this controller finds out ID of a required article from the request URL. Actual URL route to this controller is \texttt{domain.com/article/show/:id}, where \texttt{:id} serves as specified ID. In the next step the retrieved whole article from the model, which is autoloaded and then  filled this data to view.

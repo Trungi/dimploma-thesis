@@ -1,5 +1,5 @@
 \chapter{Courses 2 LMS}
-
+\label{sec:courses}
 
 
 Now, that we have understaning of how CodeIgniter works, we can continue with description of Courses 2 system, as it was developed by Jakub Culiks work \cite{culik}. Motivation of this chapter is to describe this system as it was implemented before this work, explain motivation for creating a new learning management system (LMS) and bring some technical details of Courses 2 LMS. This chapter is considered as an introduction to our work and may be used to differentiate our work from previous works.
@@ -50,8 +50,18 @@ Courses 2 is build to offer one, root layout for all of the pages. It is not nee
 As we can see on figure \ref{courses2screen}, root layout was split into 4 different parts, each with specific purpose and rendered independently. Each numbered part is rendered by selected module, the rest is rendered by system. This screenshot was rendered using \texttt{Notes} module as it is showing content of a lecture. Part number 4 is reserved for notifications, such as new assignment was created or so.
 
 \section{HMVC extension}
+Using MVC design pattern is excellent for building small applications. Hovewer, huge application building on pure MVC pattern brings also some disadvantages \cite{culik}. For example, large sets of views, models and controllers could be a point of failure for many programmers. These sets of classes easily get messed up and chaotic. Hierarchical Model-View-Controller tries to bring an order into this mess.\cite{hmvc}.
 
-Now, let's focus on hierarchical model-view-controller design pattern again. We indicated before this pattern plays the main role in implementation of Courses 2. It is done so that each module has it's own MVC flow which is then merged by System part. This approach si not directly supported by CodeIgniter, so changes had to be made.
+HMVC is a direct extension of the MVC pattern that aims to solve mainly scalability issues mensioned earlier. HMVC was first described in a blog post on the JavaWorld web site in July 2000 \cite{hmvc}. In summary, HMVC is a collection of MVC triads operating as one application. By the term triad, we mean single instance of MVC serving for one specific function. Each of this triads then is treated as individual and can be rendered on its own. This resolves into greater scalability, code reusability and most importantly, resolves the problem with hudge views in large projects.
+
+\assignment{MH: $\uparrow$ you need to explain
+HMVC better, in more details.}
+
+
+To successfuly implement HMVC, it is crucial for application to be broken into systems \cite{hmvc}. Each system gets it's own views, models and controllers and is fully in control of it's own part and nothing else. In Courses 2 system, these systems are called modules, which we will discuss later. One of the advantages of using HMVC design pattern is, that we can focus on one module without changing implementation in others.
+
+
+Implementation of HMVC in Courses 2 aim that each module has it's own MVC flow which is then merged by System part. This approach si not directly supported by CodeIgniter, so changes had to be made.
 
 
 To do so, in our predecessive work CodeIgniter Modular Extensions \cite{modularextensions} was selected. This extension is licenced as open-source and can be freely used and distributed. One of the reasons for usage of this extensions was that in CodeIgniter we can’t call more than 1 controller per request. Therefore, to achieve HMVC, we have to simulate controllers \cite{modularextensions}. 
