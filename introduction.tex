@@ -1,14 +1,37 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-\overview{Chapter plan}
+\section*{Background}
+During the last years, the internet brought a revolution into the process of teaching and learning. This new learning process is interactive, widely accessible and fast. This form of E-learning is often reffered to as Learning Management Systems (LMS).
 
-\paragraph{}
-TODO
+One of the Learning Management Systems used at our faculty is Courses 2. This is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub Culik \cite{culik}. The team was able to create a simple, customizable and modular learning management system. The core principle of Courses 2 was to provide modularity, it originally included 5 modules. 
 
-\assignment{MH: Write the introduction, ok?}
-\minor{MH: This is a minor problem}
+Until the end of summer semester of 2016, 32 courses with a total of 200 distinct students were using this system.
 
-\newpage
+\section*{The problem}
+In this thesis, we focuse on analyzing the Assignments module of Courses 2. We mainly address two different classes of problems.
 
-Intro page 2
+First class of problems is introduction of new concepts of assignments. Computer Science students are often taught many different types of algorithms, matematics and programmings languages. This is very beneficial to them since many hard skills will be reqired in their future career. But on the other side of this, these students are lackings skills in teamwork, constructive critisism, the ability of self\-reflection or job evaluation.  These skills are essential in ther future jobs or science career but still none or very little effort is put to teach students these skills.
+
+The second class of problems are usability problems. Some students, who were using this system, complained about various problems, such as insufficient interconections between Assignments module and other modules, dissaranged interfaces etc.
+
+\section*{Proposed solution}
+Throughout this work, we proposed, discussed and implemented multiple concepts, each of them addressing a different problem.
+
+On Modern Approach to Webdesign we introduced Team Projects with peer review and teamwork review. Team project is an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism.
+
+We also presented Assignments Mirroring. Courses 2 offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers. This algorithm also supports mirroring of HTTP redirects, erorrs and even automated logging in of a user into web site.
+
+The next thing we implemented was Improved Submissions. Results of this section were presented also in \cite{peerreview}.
+
+On the side of usability issues we created Assignments Dashboard. This dashboard aims to offer easy access to every information the student need to know about his assignment. We also created an connection between Note module of Courses 2, which helps provide further information about assignments in the dashboard.
+
+
+\section*{The outline}
+This work is divided into two parts.
+
+In the first part, we provide explanations of the used tools, libraries, design patterns and the Courses 2 system. In the Chapter \ref{sec:courses} we analyze Courses 2 system with focus on Assignments module.
+
+In the second part, we provide discuss mentioned problems, propose potential solutions, then present our additions and show implementation details.
+
+Our results are then concluded in Conclusion.
