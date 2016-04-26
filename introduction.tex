@@ -4,21 +4,51 @@
 \section*{Background}
 During the last years, the internet brought a revolution into the process of teaching and learning. This new learning process is interactive, widely accessible and fast. This form of E-learning is often reffered to as Learning Management Systems (LMS).
 
+\minor{MH: $\uparrow$ ``the Internet'' and ``e-learning'' and also
+``\v{C}ul\'{i}k''}
+\assignment{MH: $\uparrow$ The last sentence is wrong, this is not LMS, LMS
+is something different -- a computer system used to support the learners,
+menage the learning content, etc. In general LMSs have nothing to do with
+the Internet necessarily}%
+
 One of the Learning Management Systems used at our faculty is Courses 2. This is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub Culik \cite{culik}. The team was able to create a simple, customizable and modular learning management system. The core principle of Courses 2 was to provide modularity, it originally included 5 modules. 
 
 Until the end of summer semester of 2016, 32 courses with a total of 200 distinct students were using this system.
 
 \section*{The problem}
+\assignment{MH: the problem should be described more particularly. The
+problem addressed was much more elaborate, flexible, and configurable way
+to manage assignments was needed in order to allow to apply some of the
+modern teaching techniques, including peer review. In addition, the process
+is quite complex, and it was a problem to arrange the assignments module in
+a concise and informative way for the students... }
+
 In this thesis, we focuse on analyzing the Assignments module of Courses 2. We mainly address two different classes of problems.
+\assignment{MH: $\uparrow$ also, the focus was not just to analyze the
+module, but the main task was to design a develop a module, that would
+filfull the requirements as I explained above}
 
 First class of problems is introduction of new concepts of assignments. Computer Science students are often taught many different types of algorithms, matematics and programmings languages. This is very beneficial to them since many hard skills will be reqired in their future career. But on the other side of this, these students are lackings skills in teamwork, constructive critisism, the ability of self\-reflection or job evaluation.  These skills are essential in ther future jobs or science career but still none or very little effort is put to teach students these skills.
 
 The second class of problems are usability problems. Some students, who were using this system, complained about various problems, such as insufficient interconections between Assignments module and other modules, dissaranged interfaces etc.
 
 \section*{Proposed solution}
+
+\assignment{MH: go more into technical details, and less into pedagogical.
+Explain that, in order to support the required workflow and the reqeusted
+configurability and flexibility of the module, the design and
+implementation were non-trivial...}
+
 Throughout this work, we proposed, discussed and implemented multiple concepts, each of them addressing a different problem.
 
 On Modern Approach to Webdesign we introduced Team Projects with peer review and teamwork review. Team project is an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism.
+
+\minor{MH: $\uparrow$ Modern Approaches are now renamed to Web Technology
+and Methodology}
+\minor{MH: improve English: ``On ... we introduced'' $\to$ to support the
+needs of the ... course, we introduced}
+\minor{MH: it's not clear what you mean by ``Improved Submissions''...
+don't use this name here, rather describe  what you implemented...}
 
 We also presented Assignments Mirroring. Courses 2 offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers. This algorithm also supports mirroring of HTTP redirects, erorrs and even automated logging in of a user into web site.
 
@@ -32,6 +62,11 @@ This work is divided into two parts.
 
 In the first part, we provide explanations of the used tools, libraries, design patterns and the Courses 2 system. In the Chapter \ref{sec:courses} we analyze Courses 2 system with focus on Assignments module.
 
+\assignment{MH: $\uparrow$ make it cleat that here you will be talking about the
+existing system}
+
 In the second part, we provide discuss mentioned problems, propose potential solutions, then present our additions and show implementation details.
+
+\assignment{MH: $\uparrow$ write the outline by listing all chapters}
 
 Our results are then concluded in Conclusion.
