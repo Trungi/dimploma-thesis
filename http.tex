@@ -4,7 +4,7 @@ In this short chapter, we present basics of HTTP communication. We do not aim to
 Therefore we reduce our efforts into few  concept, which are referenced later in this work.
 
 \section{HTTP headers and status codes}
-HTTP message headers are used to precisely describe the resource being fetched or the behavior of the server or the client. \cite{mozzila} For each HTTP request, headers are served both on request and response side. Example of server response headers may be found on Listing \ref{lst:httpresponse}. These headers were received by a web browser after requesting an URL \texttt{http://www.st.fmph.uniba.sk/\textasciitilde trungel2/}.
+HTTP message headers are used to precisely describe the resource being fetched or the behavior of the server or the client. \cite{mozzila} For each HTTP request, headers are served both on request and response side. Example of server response headers may be found in Listing \ref{lst:httpresponse}. These headers were received by a web browser after requesting an URL \texttt{http://www.st.fmph.uniba.sk/\textasciitilde trungel2/}.
 
 \begin{lstlisting}[caption={Http response headers},label={lst:httpresponse}]
 HTTP/1.1 200 OK
@@ -21,7 +21,7 @@ Connection: Keep-Alive
 Content-Type: text/html
 \end{lstlisting}
 
-First line of HTTP response headers shown on Listing \ref{lst:httpresponse} signals that request was processed correctly and the result is transmitted after these headers. The number \texttt{200} is called HTTP status code. There are five classes of status codes, each of them for signalizing something different. For our purposes, we only focus on some of them:
+First line of HTTP response headers shown in Listing \ref{lst:httpresponse} signals that request was processed correctly and the result is transmitted after these headers. The number \texttt{200} is called HTTP status code. There are five classes of status codes, each of them for signalizing something different. For our purposes, we only focus on some of them:
 
 \begin{itemize}
 \item 200 OK - Web server is signalizing that everything went OK and the response is sent after message headers.
@@ -71,7 +71,7 @@ Mod\_ewrite provides a way to modify incoming URL requests, dynamically, based o
 
 It supports an unlimited number of rules and an unlimited number of attached rule conditions for each rule to provide a really flexible and powerful URL manipulation mechanism. The URL manipulations can depend on various tests: server variables, environment variables, HTTP headers, time stamps, external database lookups, and various other external programs or handlers, can be used to achieve granular URL matching \cite{modrewrite}.
 
-For this URL manipulation, \texttt{mod\_rewrite} uses rewrite rules. Example of these rules may be found on Listing \ref{lst:rewriterule}. This rule redirects request for \texttt{foo.html} into \texttt{bar.html}. 
+For this URL manipulation, \texttt{mod\_rewrite} uses rewrite rules. Example of these rules may be found in Listing \ref{lst:rewriterule}. This rule redirects request for \texttt{foo.html} into \texttt{bar.html}. 
 
 
 

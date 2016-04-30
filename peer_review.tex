@@ -48,7 +48,7 @@ As opposed to teachers, students can only view these notes. As the reallity show
 \end{figure}
 
 \subsection{Implementation}
-As seen on figure \ref{assignmentnote}, notes can be linked with an assignment and then can be shown together with it. This can be done only by a teacher in administration interface of an assignment. These notes are then showed in user dashboard. We explain this later, in the next section of these work.
+As seen in Figure \ref{assignmentnote}, notes can be linked with an assignment and then can be shown together with it. This can be done only by a teacher in administration interface of an assignment. These notes are then showed in user dashboard. We explain this later, in the next section of these work.
 
 
 For creating such connection, we altered database model and added a table \texttt{assignment\_note}, which contains many to many relationship between fields \texttt{assignment\_id} and \texttt{note\_id}. When displaying any assignment, note module is providing an interface to get any note by it's id.
@@ -65,9 +65,9 @@ After an intense development of Assignments module, interface for submitting and
     \label{fig:assignments_dashboard}
 \end{figure}
 
-Result of our efforts is the dashboard that is shown on figure \ref{fig:assignments_dashboard}. This dashboard can be splitted into multiple sections.
+Result of our efforts is the dashboard that is shown in Figure \ref{fig:assignments_dashboard}. This dashboard can be splitted into multiple sections.
 
-First section is always showing critical information. On figure \ref{fig:assignments_dashboard} there is no critical information shown. By this, we mean mostly team forming deadlines, which must be finished until deadline and user can not submit an assignment if he has not enough team members.
+First section is always showing critical information. In Figure \ref{fig:assignments_dashboard} there is no critical information shown. By this, we mean mostly team forming deadlines, which must be finished until deadline and user can not submit an assignment if he has not enough team members.
 
 First section is displaying current tasks student has to accomplish. This serves as a reminder on the top of the page and displays reviews to review or assignment rounds to submit if the user had not done it already
 

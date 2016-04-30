@@ -5,58 +5,35 @@ assignments, similar to that we have for regular assignments. This new
 diagram would include additional steps such as team formation, team review,
 etc. Throughout the chapter you can then refer to the diagram}
 
-\minor{MH: please use spell check -- there are \emph{many} typos}
-
 \label{sec:teamprojects}
-In this chapter, we are describing motivation, development, support and usage of team assignments. We decided to introduce this concept into educatioal process during the spring of 2015 on some courses, such as Modern Approaches to Webdesign or Algorithms and Data Structures. We finished specifications during summer of 2015 and by start of the winter semester   Courses 2 Assignments module was reimplemented to support this change. After that time, this module was ready but we continued to support it's further development to met all of the students needs.
+In this chapter, we are describing motivation, development, support and usage of team assignments. We decided to introduce this concept into educational process during the spring of 2015 on some courses, such as Web Design Technology and Methodology or Algorithms and Data Structures. We finished specifications during summer of 2015 and by start of the winter semester   Courses 2 Assignments module was reimplemented to support this change. After that time, this module was ready but we continued to support its further development to met all of the students needs.
 
-\minor{MH: $\uparrow$ Modern Approaches are now called Web Design
-Technology and Methodology}
 
-\minor{MH: $\uparrow$ ``it's'' $\to$ ``its''}
+This work is also a subject of other researchers at our faculty such as Veronika Drop\v{c}ov\'{a}'s research \cite{dropcova}. In this work, we focus on semantics and implementations whereas other researchers are focusing on pedagogical aspects of this work.
 
-This work is also a subject of other researchers at our faculty such as Veronika Dropcova's research \cite{dropcova}. In this work, we focus on semantics and implementations whereas other researchers are focusing on pedagogical aspects of this work.
-
-\minor{MH: $\uparrow$ Drop\v{c}ov\'{a} }
 
 \section{Motivation}
 
-Computer Science students are often taught many different types of algorithms, matematics and programmings languages. This is very beneficial to them since many hard skills will be reqired in their future career. But on the other side of this, these students are lackings skills in teamwork, constructive critisism, the ability of self\-reflection or job evaluation.  These skills are essential in ther future jobs or science career but still none or very little effort is put to teach students these skills. 
+Computer Science students are often taught many different types of algorithms, mathematics and programmings languages. This is very beneficial to them since many hard skills will be required in their future career. But on the other side  these students are often lacking skills in teamwork, constructive criticism, the ability of self\-reflection or job evaluation.  These skills are essential in their future job or science career but still none or very little effort is put to teach students these skills. 
 
-This is why we are introducing new concepts of assignments for students.  In this chapter, we focuse on implementing and usage of one of these concepts, team assignments with peer and team review. With usage of this term, we mean an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism. Each of this mentioned concept is described in detail in following subsections.
-
-\assignment{MH: $\uparrow$ ``teaching process'' $\to$ ``process'' -- makes more sense
-here, as strictly said, this is not our whole teaching process}
+This is why we are introducing new concepts of assignments for students.  In this chapter, we focus on implementing and usage of one of these concepts, team assignments with peer and team review. By usage of this term, we mean an assignment, which students solve in small teams, submit their solutions and then review other teams work and also their teammates. Each part of this process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive criticism. Each of this mentioned concept is described in detail in following subsections.
 
 \section{Semantics and implementation}
-Now, we we move to semantics and implementation of team assignments in Courses 2 Learning Management System. It was very challenging to alter the database model and source code while still persisting old functionality without any bugs. Results presented in this section are result of extensive development, refactoring and testing because old design of Assignment module did not expect to provide an inteface, where one submission could be linked with whole team (multiple students). We also had to build this system as secure as possible not to allow students to alter any unwanted data. This process of testing and bugfixing took us few months.
-
-\minor{MH: $\uparrow$ ``Courses 2 Learning Management System'' $\to$
-``Courses 2'' or ``Courses 2 LMS'' -- after you have introduced this
-somewhere before it's much better not to repeat the whole capitalized term,
-it's to clumsy to read}
+Now, we we move to semantics and implementation of team assignments in Courses 2 LMS. It was very challenging to alter the database model and source code while still persisting old functionality without any bugs. Results presented in this section are result of extensive development, refactoring and testing because old design of Assignment module did not expect to provide an interface, where one submission could be linked with whole team (multiple students). We also had to build this system as secure as possible not to allow students to alter any unwanted data. This process of testing and bug fixing took us few months.
 
 \subsection{Representation}
 
 \subsubsection{Database}
 
-\minor{MH: $\downarrow$ ``in the database'' and ``in Figure XY'' BTW why
-the only figure in the Appendix is numbered 4? BTW maybe it's better to
-detail the color key of the figure in the Appendix, near the actual figure.
-Or if it's the only thing in the Appendix, maybe you could put it here on a
-separate page...}
-
-Final representation of teams in database is shown on Figure \ref{assignmentdatabase} in Appendix A. On this figure, elements added in this work are marked red, original elements are black. We decided to represent basic team with two tables \texttt{assignment\_team} and \texttt{assignment\_team\_member}.
+Final representation of teams in the database is shown on Appendix A. We decided to represent basic team with two tables \texttt{assignment\_team} and \texttt{assignment\_team\_member}.
 
 The first one is used only for pairing the team with specific assignment and retrieving its name. Elements represented by this table are checked for duplicity so there can not be two teams with the same name in one assignment.
 
 The second one serves for remembering which student is in which team. This table is also used for student invites (column \texttt{accepted} which we explain later. There is also a redundant attribute \texttt{assignment\_id}, which could be retrieved from the first table but adding this redundancy helps reduce database load and database query simplicity.
 
-\minor{MH: $\downarrow$ resolve the line overflows (mind LaTeX's warnings)}
-
 There are also tables \texttt{assignment\_round\_team\_question}, \texttt{assignment\_round\_team\_answer} and \texttt{assignment\_rount\_team\_rating} that plays part in team reviewing which is to be explained in Section \ref{sec:teamreview}.
 
-We also had to alter old database table of \texttt{assignment} and \texttt{assignment\_round} and add columns to specify team creation, limits, deadlines and reviews. These names are hovewer self\-explanatory.
+We also had to alter old database table of \texttt{assignment} and \texttt{assignment\_round} and add columns to specify team creation, limits, deadlines and reviews. These names are however self\-explanatory.
 
 \subsubsection{Models}
 For managing teams, we created \texttt{Assignment\_team\_model} located in \\ \texttt{application/modules/assignments/models/} directory. This model offers a handful of methods for creating, updating, deleting and managing teams.
@@ -78,9 +55,7 @@ public function accept_invite($invite_id, $user_id)
 }
 \end{lstlisting}
 
-On Listing \ref{lst:teaminvite} we can see method for accepting team invites in team model (these will be explained later). As we minimal database model with a little redundancy, these methods can be kept very simple.
-
-\minor{MH: $\uparrow$ fix ``As we minimal database model''}
+In Listing \ref{lst:teaminvite} we can see method for accepting team invites in team model (these will be explained later). As we designed minimal database model with a little redundancy, these methods can be kept very simple.
 
 For managing team reviews, we created \texttt{Team\_reviews\_model}. This model is used both for administration and submissions of peer reviews. We will explain team reviews in Section \ref{sec:teamreview}.
 
@@ -102,9 +77,7 @@ We will now go through team assignment flow, as we designed it. During this, we 
 The teacher can create a team assignment in teacher's assignment administration interface. This interface is the same as for creating a normal assignment. The only difference is that teacher must allow the assignment to be team assignment, set deadlines for team forming and fill, how many students he expects to be in each team. The teacher can set lowest and highest number of students in each group without any limitations. This settings are then stored in \texttt{assignment} database table under values \texttt{is\_team}, \texttt{team\_min\_members}, \texttt{team\_max\_members}, \texttt{team\_forming\_closes}.
 
 \subsection{Team forming}
-After the start time of team forming has passed and before team forming deadlines, students are required to create or join a team. This is implemented as shown on Figure \ref{team_forming}. Leader of the team can enter team name, which has to be unique for the course. After he created the team, he automatically joins this team and is reqired to invite his classmates to join. There is a limitation of how many students can be invited, based on maximum number of students in one team. This means that he can only invite as many friends as is the maximum number allowed by the teacher. He can, however, delete this invites and invite a different classmate. Also, any member of the team can invite another student of the course.
-
-\minor{MH: $\uparrow$ ``based on the minimum and the maximum number of''}
+After the start time of team forming has passed and before team forming deadlines, students are required to create or join a team. This is implemented as shown in Figure \ref{team_forming}. Leader of the team can enter team name, which has to be unique for the course. After he created the team, he automatically joins this team and is required to invite his classmates to join. There is a limitation of how many students can be invited, based on the minimum and the maximum number of students in one team. This means that he can only invite as many friends as is the maximum number allowed by the teacher. He can, however, delete this invites and invite a different classmate. Also, any member of the team can invite another student of the course.
 
 \begin{figure}[h]
     \centering
@@ -117,44 +90,29 @@ If the student accepts an invite, all his other invites are made invalid so thes
 
 Another thing to mention, while the team does not have enough members specified by the teacher, there is a notification shown to each member. This is done to ensure that the team does not forget about this.
 
-After the team forming deadline, no student can join, create nor leave the team. After this deadline, only teacher can edit team members and still create new team. 
+After the team forming deadline, no student can join, create nor leave the team. After this deadline, only teacher can edit the team members and create a new team. This is mainly done so because students are expected to work on their project as a group after the deadline and no new students are expected to join this course.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/teamadmin.png}
     \caption{Team administration}
     \label{team_forming}
-    \assignment{MH: please edit the screenshot, so that is does not have
-    students like User 123... Maybe use some fake English names?}
 \end{figure}
 
-The teacher can in administration see the list of the teams as shown on Figure \ref{team_forming}. During the development, we tried multiple types of interfaces and this is the one that was selected. This interface offers simple access to each student and team forming or editing.
-
-\assignment{MH: $\uparrow$ try to explain aa bit, why there is no option
-to kick a user from the team, and also why students can't jin teams after
-the forming deadline\ldots Just 1--2 sentences. If it helps, ask Nika about
-this}
-
+The teacher can in administration see the list of the teams as shown in Figure \ref{team_forming}. During the development, we tried multiple types of interfaces and this is the one that was selected. This interface offers simple access to each student and team forming or editing.
 
 \subsection{Assignment submission}
 In the next step, after all of the teams are formed, and assignments are open students can submit their assignment solutions. Since we are speaking about team projects, it is enough if only one of the team members submit this submission provided that all of the members participated on it. So if one students submits the solution, all members of the team should see it and be rated for it.
 
-This could be done by multiple ways. As we see on Figure \ref{assignmentdatabase} one submission is represented by a \texttt{assignment\_submission} table. For pairing submission with users were used parameters \texttt{user\_id} and \texttt{submission\_id}. So for team projects, we could just create a new table like \texttt{assignment\_team\_submission} with parameter \texttt{team\_id} instead of \texttt{user\_id}.
+This could be done by multiple ways. As shown on Figure on Appendix A one submission is represented by a \texttt{assignment\_submission} table. For pairing submission with users were used parameters \texttt{user\_id} and \texttt{submission\_id}. So for team projects, we could just create a new table like \texttt{assignment\_team\_submission} with parameter \texttt{team\_id} instead of \texttt{user\_id}.
 
 This approach would however be very inefficient and would led to code duplicity and refactoring. Instead of this, we chose to fix this problem in model layer of Assignment module. All submissions for a team member can be retrieved by joining the tables  \texttt{assignment}, \texttt{assignment\_team} and \texttt{assignment\_team\_member}. Some people could argue that joining three database tables may lead to inefficiency but it is not true. We do not expect to have millions of teams and students in our database so we could prioritize code simplicity and reusability instead of effectivity on large datasets.
 
 \subsection{Peer review}
 \label{sec:peerreview}
-Peer review is another important part of team projects. By this term we mean reviewing work of other teams. Each team gets 3 other submissions to review. Reviewing process includes understaning of this solution, answering questions defined by a Teacher and submitting them. We also decided that we will for now accept reviews from one user for whole team. So it is enough if the team choses one member, who will submit team reviews. This was decided also for research purposes by Veronika Dropcovas research \cite{dropcova}. 
+Peer review is another important part of the team projects. By this term, we mean reviewing of work of other teams. Each team gets 3 other submissions to review. Reviewing process includes understanding of the assigned submission, answering questions defined by a Teacher and submitting them. We also decided that the team can delegate the user to  write peer reviews because it is up to the team to split their work.
 
-\minor{MH: $\uparrow$ please rewrite ``this solution'' somehow, it's not
-apparent to the reader what we meen by it here}
-\assignment{MH: $\uparrow$ let's explain this briefly instead balmiing it
-on ``research purposes'' -- the reason is that we want to allow the teams
-to split their work as the need, including the case when one member is
-tasked with profiding all feedback}
-
-Team review deadlines are set by the teacher in assignment administration and then stored in \texttt{assignment\_round} table. We designed these reviews not to be assigned automaticaly after the reviewing period began but an action from the teacher is required. The teacher must press the button for peer review assignment in administration. The reason for this is that sometimes a student forgets about deadline or tries to submit a submission few minutes after deadline. In such case, if peer reviews were assigned automatically after the submitting period ended, this students work would not be evaluated by other students.
+Team review deadlines are set by the teacher in assignment administration and then stored in \texttt{assignment\_round} table. We designed these reviews not to be assigned automatically after the reviewing period began but an action from the teacher is required. The teacher must press the button for peer review assignment in administration. The reason for this is that sometimes a student forgets about deadline or tries to submit a submission few minutes after deadline. In such case, if peer reviews were assigned automatically after the submitting period ended, this students work would not be evaluated by other students.
 
 In peer reviews we were able to use original algorithm by Jakub Culik \cite{culik} with minor changes. This could be done by clever choice of data model, which can act as an individual, not team project. As we said in previous subsection, teams are not directly connected to submissions in data model but users are. With this hack, we could put data to review assigning algorithm which outputs which users has to review which submissions.
 
@@ -186,34 +144,23 @@ public function get_to_review($assignment_id)
 }
 \end{lstlisting}
 
-As on Listing \ref{lst:peerreviewlisting}, for retrieving information about peer reviews, we must join the team tables. This solution offers great code reusability but there's a price to pay in joining multiple tables. This tables are hovewer kept reasonably small and SQL optimizer in any database system can easily optimize this query.
+As in Listing \ref{lst:peerreviewlisting}, for retrieving information about peer reviews, we must join the team tables. This solution offers great code reusability but there's a price to pay in joining multiple tables. This tables are however kept reasonably small and the SQL optimizer in any database system can easily optimize this query.
 
 This solution is the best also for different reasons. When we need to retrieve all submitted reviews for any team member, it might happen that each review is filled and submitted by different member. We must however display all of them. Merging tables and querying for all team members is therefore superior option to duplicating the database and creating many tables.  
-
-\overview{MH: $\uparrow$ this is a very nice conclusion, very well said!}
 
 \subsection{Teamwork review}
 \label{sec:teamreview}
 Teamwork is filled by each team member and usually consists of two parts which are predefined by the teacher. 
 
-The first part looks similar to peer reviewing. Student has to answer multiple questions about each team member. These questions usually asks information about how much work each member has done, how he did it and may be asking for feedback for this user. Each team members is then shown what other team members responded about him anonymously. This is providing him feedback about what skills or behaviours should he improve.
+The first part looks similar to peer reviewing. Student has to answer multiple questions about each team member. These questions usually ask information about how much work each member has done, how he did it and may be asking for feedback for this user. These questions are fully configurable thanks to our data model and the application by the teacher.
 
-\minor{MH: $\uparrow$ ``questions usually asks'' $\to$ ``questions usually
-ask''}
-\assignment{MH: $\uparrow$ mention also that the questions are fully
-configurable, as supported by our data model and the application}
+Each team members is then shown what other team members responded about him anonymously. This is providing him feedback about what skills or behaviours should he improve.
 
-The second part is called teamwork rating consists of team evaluation. The student has to split 100 points between all other members. For example, if there are three other team members, the student can give 30, 30 and 40 points to his teammates. These points are then summed up and play role in final evaluation for evaluated student. 
+The second part is called teamwork rating consists of team evaluation. The student has to divide 100 points between all other members. For example, if there are three other team members, the student can give 30, 30 and 40 points to his three other teammates. These points are then summed up and play role in final evaluation for the student. This approach is very intuitive and provides us with an overview of how well each students has worked in a team.
 
-\assignment{MH: $\uparrow$ here you need to explain the mathematics how the
-evaluation divides 100\% per student between the team members, and that
-this is a very intuitive way to do this. I believe Nika also has some
-citation from where this was taken...}
+We also come up with an algorithm to generate these points for users who refused to participate in teamwork review. At first, we tried to implement some sophisticated generation based on other students answers but this approach did not work well. Finally, we chose a simple solution that divides this points equally between all students. This approach led to most  fair distribution of the points.
 
-We also had to come up with an algorithm to generate these points for users who refused to participate in teamwork review. At first, we tried to implement some sophisticated generation based on other students answers but this approach did not work well. At the end we chose the simplest solution and divide this points equally between all students. The reason for this was that even though it was easy to find and implement some statistic based solution, this solution might not be objective in some cases. For example only one or two students answered, their percentage could be very subjective and a good student could get not too many points.
-
-\assignment{MH: $\uparrow$ this is very hard to understand, I'm not sure
-what you actually wanted to say... please try to rewrite this somehow}
+After the teamwork review deadline is over, results are shown anonymously on an assignment submission page. 
 
 \begin{figure}[h]
     \centering
@@ -222,22 +169,11 @@ what you actually wanted to say... please try to rewrite this somehow}
     \label{team_reviewing}
 \end{figure}
 
-Results of teamwork reviewing are shown on Figure \ref{team_reviewing}. This screenshot is taken from the assignment submission page. At first, we decided to show submission details and enabled students to download their submission.
-
-\assignment{MH: $\uparrow$ The submission page is described in some
-appropriate place before this? It's not very systematic to explain some of
-the details related to this here for the first time. It would make more
-sense to have this together somewhere before, and here to only refer to it
--- and to explain how there reviews are displayed on it...}
+In the first section of the Figure \ref{team_reviewing} is shown submission detail. This section is inherited from original Courses 2 Assignments module.
 
 In the next section we show teamwork rating as a sum of all individual teamwork ratings of this team member for this project round. 
 
-The last part are all of submitted teamwork reviews written by individual team members. These reviews are groupped by team members and ordered by order of questions defined by the teacher.
-
-\assignment{MH: $\uparrow$ be careful, because the reviewers names are of
-course not showed to the students... So make it apparent that you group by
-team mebers who are being reviewed...}
-
+The last part are all of submitted teamwork reviews written by individual team members. These reviews are grouped by team members (but the names of the members are not shown) and ordered by order of questions defined by the teacher. 
 
 \subsection{Teacher's evaluation}
 The last part of team projects is teacher's evaluation. This evaluation takes place in assignments interface.
@@ -249,41 +185,22 @@ The last part of team projects is teacher's evaluation. This evaluation takes pl
     \label{team_submission_admin}
 \end{figure}
 
-First part of teacher's is build to show all of the submissions ordered by team name. There are also some more information, like submission date, assigned reviews and evaluation present. The teacher is then supposed to open an assignment submission page, as show on Figure \ref{team_submission_admin}.
+The first part of teacher's administration is build to show all of the submissions ordered by team name. There are also some more information, like submission date, assigned reviews and evaluation present. The teacher is then supposed to open an assignment submission page, as show in Figure \ref{team_submission_admin}.
 
-\minor{MH: $\uparrow$ First part of teachers \emph{what}? Asi chyba nejake
-slovo...}
-
-Second part of teacher's evaluation is shown on Figure \ref{team_submission_admin}. This is a team project, but name of the student who submitted this submission is shown on the top of the page. This can be done easily with our database design. 
+Second part of teacher's evaluation is shown in Figure \ref{team_submission_admin}. This is a team project, but name of the student who submitted this submission is shown on the top of the page. This can be done easily with our database design. 
 
 The teacher is then supposed to review the team's submission and evaluate it. 
 
-In the next step, there are shown results of team evaluation for each memeber of the team. In each row, the fist number is the total percentage received. Then, the bold numbers are results of evaluation of each team member. If some team member did not submit his team evaluation, we automatically divide his points to other team members. These auto generated numbers are not bold.
+In the next step, there are shown results of team evaluation for each member of the team. In each row, the fist number is the total percentage received. Then, the bold numbers are results of evaluation of each team member. If some team member did not submit his team evaluation, we automatically divide his points to other team members. These auto generated numbers are not bold.
 
-These information are shown mostly for evaluation purposes, because the teacher can divide the evaluated points for project among the best team members. He can also award the best members of the team with bonus points.
+These information are shown mostly for evaluation purposes, because the teacher can divide the evaluated points for project among the best team members. The teacher can also award the best members of the team with bonus points.
 
-\minor{MH: $\uparrow$ in English texts we avoid saying ``he'' and ``his''
-of unknown person for political correctness. You may use ``she'' and
-``her'' or plural pronouns (ask Marry about this)}
-\assignment{MH: $\uparrow$ }
-
-As we see on Figure \ref{team_submission_admin}, only one team evaluation is submitted. Results for the other two team members are auto generated.
+As we see in Figure \ref{team_submission_admin}, only one team evaluation is submitted. Results for the other two team members are auto generated.
 
 The next section of evaluation offers a teacher links to team reviews by users. These information had to be generated on different page for clarity purposes. It would be to much noise if they were shown together with other types of reviewing.
 
-Also, the number of total submitted team reviews is avaible for a teacher.
+Also, the number of total submitted team reviews is available for a teacher.
 
-Then, there is a feedback form, which serves as a feedback shown on student's submission page.
-
-\assignment{MH: $\uparrow$ the form serves for \emph{teachers} to give
-feedback to the srudent...}
+Then, there is a feedback form, which submits the teachers feedback shown on student's submission page.
 
 And finally, on the bottom of the page we show results of peer reviews. These reviews are groupped by submitted users and ordered by order of questions defined by a teacher.
-
-Final results of the evaluations has to be, because of Courses 2 box modularity, put into different module of Courses 2, called Results Module. We see this inefficient for the teacher and also for students so there is still a space for future improvements.
-
-\assignment{MH: $\uparrow$ tu to treba nalisat nejak jemnejsie, ze to
-planujeme do buducna zlepsit, ponat to ako vylepsenie nie taku kritiku...}
-
-\section{Conclusion}
-TODO: Should I write a conclusion for this chapter?

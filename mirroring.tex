@@ -1,10 +1,10 @@
 \chapter{Web assignment mirroring}
 \label{sec:mirroring}
 
-In this chapter, we are describing implementation and workflow of assignments mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers.
+In this chapter, we are describing implementation and workflow of assignments mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Web Design Technology and Methodology course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers.
 
 \section{Motivation}
-As it was said, students in some courses taught in the Courses 2 Learning Management System allow the students to submit their solutions as an URL address of their web site. This approach brings many advantages, for example students are allowed to choose the programming language and framework that suits them the best. For example, Modern Approaches to Webdesign course is not directly requesting the students to use specific languages rather than choose their own and let them focus on semantics rather than on learning a new tools.
+As it was said, students in some courses taught in the Courses 2 Learning Management System allow the students to submit their solutions as an URL address of their web site. This approach brings many advantages, for example students are allowed to choose the programming language and framework that suits them the best. For example, Web Design Technology and Methodology is not directly requesting the students to use specific languages rather than choose their own and let them focus on semantics rather than on learning a new tools.
 
 The main disadvantage of this approach is that these submitted projects can not be hosted on servers at our Faculty for multiple reasons. We currently do not offer hostings other than for PHP programming language but many students choose different versions of this languages or go with other choices such as Python or Ruby on Rails. These require full virtual server for every students and may be hard to maintain for the teachers. Therefore we allowed students to host these web design projects on their own servers.
 
@@ -57,7 +57,7 @@ But much worse situation was that two distinct documents were located in \texttt
     \label{webclonemodel}
 \end{figure}
 
-As seen on Figure \ref{webclonemodel}, data model is split into two parts. The table \texttt{webclone\_site} represents a whole mirrored web site and the table \texttt{webclone\_document} represents a single document of this web site.
+As seen in Figure \ref{webclonemodel}, data model is split into two parts. The table \texttt{webclone\_site} represents a whole mirrored web site and the table \texttt{webclone\_document} represents a single document of this web site.
 
 Fields in the table \texttt{webclone\_site}, slug is the name of the directory, under which the site structure is saved. AuthUrl, login, password and cookie fields are used for automated login explained in section \ref{sec:login}. RootUrl represents a root URL of the web site we are mirroring. In example above it would be \texttt{http://www.example.com/shop}.
 
@@ -85,7 +85,7 @@ Now if we look into source code of this document, we may find multiple types of 
 <a href="http://www.example.com/shop/promotions/table">Table</a>
 \end{lstlisting}
 
-All of the links shown on Listing \ref{lst:multipleHrefs} lead to the same web document. However if we only saved this document under mirrored URL address without changing, only the first link would work. The second and thirth one would lead to unexisting documents and the last one would lead outside of our mirrored web page. This is something that we do not want to expirience. Our mirrored links must lead to other corresponding mirrored documents.
+All of the links shown in Listing \ref{lst:multipleHrefs} lead to the same web document. However if we only saved this document under mirrored URL address without changing, only the first link would work. The second and thirth one would lead to unexisting documents and the last one would lead outside of our mirrored web page. This is something that we do not want to expirience. Our mirrored links must lead to other corresponding mirrored documents.
 
 \subsubsection{Algorithm for rewriting HTTP Links}
 After an extensive development, we came up with an algorithm, how to rewrite this URLs. This algorithm is implemented in \texttt{webclone/webclone/src/urlparser.php} and can be described in following way.
@@ -119,7 +119,7 @@ while ($x) {
 }
 \end{lstlisting}
 
-On Listing \ref{lst:cron} we see a cron job. This is similar to functioanlity of a queue. 
+In Listing \ref{lst:cron} we see a cron job. This is similar to functioanlity of a queue. 
 
 Important class is a \texttt{Task} class. This class is instantiated with both \texttt{webclone\_site} and \texttt{webclone\_document} documents and servers as a helper for working with these documents. It takes care of editing this classes throughout flow of this algorithm, works with filenames for saving documents and its functionality is similar to a Model in MVC.
 
@@ -154,7 +154,7 @@ public function run() {
 }
 \end{lstlisting}
 
-As seen on Listing \ref{lst:statusCodes}, main flow of the algorithm is relatively simple. We first do a HTTP HEAD request for the required document. This request returns only important data such as \texttt{status\_code} or \texttt{Location}, which is used for handling each request. 
+As seen in Listing \ref{lst:statusCodes}, main flow of the algorithm is relatively simple. We first do a HTTP HEAD request for the required document. This request returns only important data such as \texttt{status\_code} or \texttt{Location}, which is used for handling each request. 
 
 \subsubsection{Handling of Redirect response}
 As we already suggested in description of our database model, to handle a redirect response we need to do three things. Firstly, we need to read \texttt{Location} HTTP header, which points the document, where we should look next. Secondly, we need to process this URL and create a new task as described in \ref{sec:crawling} to process this document in future too. And finally, we save this \texttt{status\_code} and location parameters into our data model.
@@ -183,7 +183,7 @@ foreach ($links as $link) {
 $result = $page->saveHTML();
 \end{lstlisting}
 
-Secondly we must replace all of the links with a new link, as we describe in section \ref{sec:linkReplace}. On Figure \ref{lst:hrefs} is shown how easily we can filter and replace all of the \texttt{href} attributes of links. Similarly, it can be done with \texttt{src} attribute.
+Secondly we must replace all of the links with a new link, as we describe in section \ref{sec:linkReplace}. In Figure \ref{lst:hrefs} is shown how easily we can filter and replace all of the \texttt{href} attributes of links. Similarly, it can be done with \texttt{src} attribute.
 
 \subsubsection{CSS files}
 Catch with CSS files is, that these files can include another CSS files using \texttt{@include} directive. Therefore, we need to create a parser of CSS files, which can find these directives and find links, which we need to process next. This can be done using regular expressions and PHP default function \texttt{preg\_match()} and \texttt{preg\_match\_callback()}.
@@ -215,7 +215,7 @@ Our first versions of automated logging in were automatically looking for and pa
 For automated loggging in to work, the student must submit username, password and auth URL on his web page. By auth URL we mean an URL, where an authorization process takes place. It is usually where login form action (\texttt{<form action="AUTH URL"/>} ) leads.
 
 \subsection{The process}
-If the user provided required information, automated logging in must take place before start of the mirroring. We, at first need to retrieve a Cookie file, which serves as user identification, as explained in Chapter \ref{sec:cookies}. For retrieving of this cookie, we can use a Curl library with proper settings. As seen on Listing \ref{lst:login}, we perform a request on Auth URL and then parse the cookie from response headers.
+If the user provided required information, automated logging in must take place before start of the mirroring. We, at first need to retrieve a Cookie file, which serves as user identification, as explained in Chapter \ref{sec:cookies}. For retrieving of this cookie, we can use a Curl library with proper settings. As seen in Listing \ref{lst:login}, we perform a request on Auth URL and then parse the cookie from response headers.
 
 \begin{lstlisting}[caption={Retrieving of a Cookie with Curl library},label={lst:login}]
 public function login($loginUrl) {
@@ -253,7 +253,7 @@ public function login($loginUrl) {
 }
 \end{lstlisting}
 
-After the Cookies are parsed, we save them and use for any subsequent request. As seen on Listing \ref{lst:cookieFill} we may add Cookie to a Http request header and we appear as logged in during any subsequent request.
+After the Cookies are parsed, we save them and use for any subsequent request. As seen in Listing \ref{lst:cookieFill} we may add Cookie to a Http request header and we appear as logged in during any subsequent request.
 
 \begin{lstlisting}[caption={Adding Cookie to HTTP header using Curl},label={lst:cookieFill}]
 curl_setopt($curl, CURLOPT_COOKIE, $this->task->website->cookie);
@@ -270,9 +270,9 @@ In this last section, we explain an algorithm for viewing mirrored documents on 
     \label{fig:urls}
 \end{figure}
 
-On Figure \ref{fig:urls} is shown how our serving script decides, which document to serve. First part of the URL is script location, then there is website slug. This slug is generally random generated UID to distinct between mirrored web pages. Then, the thirth part is a query for mirrored single document of a web page.
+In Figure \ref{fig:urls} is shown how our serving script decides, which document to serve. First part of the URL is script location, then there is website slug. This slug is generally random generated UID to distinct between mirrored web pages. Then, the thirth part is a query for mirrored single document of a web page.
 
-Now, the question is, how we can implement this URL management. As we described earlier, we can use Apache 2 Mod\_rewrite. This mod is generally used for rewriting URLs on server side and with a configuration script, we may force Apache 2 to always execute \texttt{index.php} script in our script directory. Used configuration, in form of \texttt{.htaccess} file is shown on Listing \ref{lst:htaccess}
+Now, the question is, how we can implement this URL management. As we described earlier, we can use Apache 2 Mod\_rewrite. This mod is generally used for rewriting URLs on server side and with a configuration script, we may force Apache 2 to always execute \texttt{index.php} script in our script directory. Used configuration, in form of \texttt{.htaccess} file is shown in Listing \ref{lst:htaccess}
 
 \begin{lstlisting}[caption={Example of .htaccess for Apache 2 mod\_rewrite},label={lst:htaccess}]
 RewriteEngine On
@@ -283,7 +283,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 \end{lstlisting}
 
-The last part of document serving is hidden inside \texttt{index.php} script saved in \texttt{webclone/server/index.php}. This script is executed for every request and its purpose is to extract website slug and query from document from an URL of request. Then, script loads requested data from database and tries to simulate the original response from the mirrored website even with its original status code.  This behaviour is shown on Listing \ref{lst:servingMirrored}.
+The last part of document serving is hidden inside \texttt{index.php} script saved in \texttt{webclone/server/index.php}. This script is executed for every request and its purpose is to extract website slug and query from document from an URL of request. Then, script loads requested data from database and tries to simulate the original response from the mirrored website even with its original status code.  This behaviour is shown in Listing \ref{lst:servingMirrored}.
 
 \begin{lstlisting}[caption={Serving of mirrored documents},label={lst:servingMirrored}]
 

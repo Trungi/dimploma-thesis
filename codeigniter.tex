@@ -14,9 +14,9 @@ In this chapter, we will present a short overview of CodeIgniter request and res
 \end{figure}
 
 
-To understand how CodeIgniter works, we have to look at processing of HTTP requests. CodeIgniter uses Apache2  module \texttt{mod\_rewrite}. This ensures, that all requests are handled to \texttt{index.php} script as seen on image \ref{codeigniter_flow}. Purpose of this script is to load configuration of the whole application and other classes. This file is provided by CodeIgniter framework and should not be modified.
+To understand how CodeIgniter works, we have to look at processing of HTTP requests. CodeIgniter uses Apache2  module \texttt{mod\_rewrite}. This ensures, that all requests are handled to \texttt{index.php} script as seen in Figure \ref{codeigniter_flow}. Purpose of this script is to load configuration of the whole application and other classes. This file is provided by CodeIgniter framework and should not be modified.
 
-Before any of the user written code is loaded, the HTTP request and all of the user submitted data is filtered for security. To process HTTP request, router must decide the correct operation over it. Each module of application must have it's own routes defined as follows:
+Before any of the user written code is loaded, the HTTP request and all of the user submitted data is filtered for security. To process HTTP request, router must decide the correct operation over it. Each module of application must have its own routes defined as follows:
 
 \begin{lstlisting}[basicstyle=\small,caption={CodeIgniter routing}]
 $route[course/(:num)] = "courses/$1";
@@ -58,7 +58,7 @@ class Article_model extends CI_Model
 }
 \end{lstlisting}
 
-As we can see on Listing \ref{model}, each model has to extend \texttt{CI\_Model} class, which is the base class for each model and provides active records functionality. We also can not forget to call \texttt{parent::\_\_construct()} in our constructor.
+As we can see in Listing \ref{model}, each model has to extend \texttt{CI\_Model} class, which is the base class for each model and provides active records functionality. We also can not forget to call \texttt{parent::\_\_construct()} in our constructor.
 
 This is just an example of very simplified model, whose only purpose is to load one article with specified \texttt{id} from database. This file should be located in folder \texttt{application/models} and named \texttt{article\_model.php}.
 
@@ -79,7 +79,7 @@ The view, as opposed to model, is where all of the user interface elements are k
 </html>
 \end{lstlisting}
 
-Example of a view is shown on Listing \ref{view}.  As seen on this listing, this view mostly contain HTML structure with a few occurrences of PHP code. In general, views are mostly HTML files with some PHP formatting code without any logic whatsoever. In context of CodeIgniter, all views are placed in \texttt{application/views} folder.
+Example of a view is shown in Listing \ref{view}.  As seen on this listing, this view mostly contain HTML structure with a few occurrences of PHP code. In general, views are mostly HTML files with some PHP formatting code without any logic whatsoever. In context of CodeIgniter, all views are placed in \texttt{application/views} folder.
 
 After we have explained models and views, it is obvious, we need a layer to connect them.
 
@@ -108,4 +108,4 @@ class Article extends MY_Controller
 \end{lstlisting}
 
 
-Example of a controller is shown on Listing \ref{controller}. At first, the controller is instantiated via \texttt{\_\_construct} method, which enables controller basic functionality. After initializing, method \texttt{show()} is called automatically by CodeIgniter. As a first thing, this controller finds out ID of a required article from the request URL. Actual URL route to this controller is \texttt{domain.com/article/show/:id}, where \texttt{:id} serves as specified ID. In the next step the controller retrieved whole article from the model, which is loaded automatically, and then passed this data to the view.
+Example of a controller is shown in Listing \ref{controller}. At first, the controller is instantiated via \texttt{\_\_construct} method, which enables controller basic functionality. After initializing, method \texttt{show()} is called automatically by CodeIgniter. As a first thing, this controller finds out ID of a required article from the request URL. Actual URL route to this controller is \texttt{domain.com/article/show/:id}, where \texttt{:id} serves as specified ID. In the next step the controller retrieved whole article from the model, which is loaded automatically, and then passed this data to the view.
