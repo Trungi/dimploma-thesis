@@ -1,11 +1,11 @@
 \chapter{Courses 2 LMS}
 \label{sec:courses}
 
-Now, that we have understaning of how CodeIgniter works, we can continue with description of Courses 2 system, as it was developed by Jakub Culik \cite{culik}. Goal of this chapter is to describe this system as it was implemented before this work, explain motivation for creating a new Learning Management System (LMS) and bring some technical details of Courses 2 LMS, which are important for future understandings of this work.
+Now, that we have understaning of how CodeIgniter works, we can continue with description of Courses 2 system, as it was developed by Jakub \v{C}ul\'{i}k \cite{culik}. Goal of this chapter is to describe this system as it was implemented before this work, explain motivation for creating a new Learning Management System (LMS) and bring some technical details of Courses 2 LMS, which are important for future understandings of this work.
 
 \section{Motivation}
 
-Courses 2 system was developed during spring and winter of 2015 with development team led by Jakub Culik. This team was able to create a simple, customizable and modular learning management system which is already used at our faculty. Until the end of summer semester of 2016, 32 courses with total of 200 students were using this system.
+Courses 2 system was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}k. This team was able to create a simple, customizable and modular learning management system which is already used at our faculty. Until the end of summer semester of 2016, 32 courses with total of 200 students were using this system.
 
 
 Need for this system started in 2010, when a new aproach of the learning was introduced in the web design course at our faculty \cite{culik}. Each student had to publish a multiple blog posts which where then evaluated by his classmates and  the teachers. Ratings were later projected into his final grade from this course. This approach led students to study more about topics they were interested in and were related to this subject. With this approach, students were also forced to discuss these problems and got a greater insight into related topics.
@@ -148,7 +148,7 @@ if (is_admin())
 \end{lstlisting}
 
 
-After end of Jakub Culik's \cite{culik} work, there were 6 controllers in this module. 3 of them were used for teacher's administration and 3 were used for student's part. All controllers extend \texttt{Module\_Controller} class and implement \texttt{Module\_Interface}, which is special superclasses for all modules controllers.
+After end of Jakub \v{C}ul\'{i}k's \cite{culik} work, there were 6 controllers in this module. 3 of them were used for teacher's administration and 3 were used for student's part. All controllers extend \texttt{Module\_Controller} class and implement \texttt{Module\_Interface}, which is special superclasses for all modules controllers.
 
 Models are located in \texttt{application/modules/assignment/models/} and views in \texttt{application/modules/assignment/views}. As seen on listing \ref{assviews} there are multiple languages, such as HTML, PHP or CSS used.
 

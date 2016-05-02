@@ -1,72 +1,52 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
+\markright{INTRODUCTION}
 
 \section*{Background}
-During the last years, the internet brought a revolution into the process of teaching and learning. This new learning process is interactive, widely accessible and fast. This form of E-learning is often reffered to as Learning Management Systems (LMS).
+During the last years, the Internet brought a revolution into the process of teaching and learning. This new learning process is interactive, widely accessible and fast. With the boom of this new learning process came also the boom of Learning Management Systems (LMS).
 
-\minor{MH: $\uparrow$ ``the Internet'' and ``e-learning'' and also
-``\v{C}ul\'{i}k''}
-\assignment{MH: $\uparrow$ The last sentence is wrong, this is not LMS, LMS
-is something different -- a computer system used to support the learners,
-menage the learning content, etc. In general LMSs have nothing to do with
-the Internet necessarily}%
+%\assignment{MH: $\uparrow$ The last sentence is wrong, this is not LMS, LMS
+%is something different -- a computer system used to support the learners,
+%menage the learning content, etc. In general LMSs have nothing to do with
+%the Internet necessarily}%
 
-One of the Learning Management Systems used at our faculty is Courses 2. This is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub Culik \cite{culik}. The team was able to create a simple, customizable and modular learning management system. The core principle of Courses 2 was to provide modularity, it originally included 5 modules. 
+One of the Learning Management Systems used at our faculty is Courses 2. This is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}k \cite{culik}. The team was able to create a simple, customizable and modular Learning Management System. The core principle of Courses 2 was to provide modularity and it originally included 5 modules. 
 
 Until the end of summer semester of 2016, 32 courses with a total of 200 distinct students were using this system.
 
 \section*{The problem}
-\assignment{MH: the problem should be described more particularly. The
-problem addressed was much more elaborate, flexible, and configurable way
-to manage assignments was needed in order to allow to apply some of the
-modern teaching techniques, including peer review. In addition, the process
-is quite complex, and it was a problem to arrange the assignments module in
-a concise and informative way for the students... }
 
-In this thesis, we focuse on analyzing the Assignments module of Courses 2. We mainly address two different classes of problems.
-\assignment{MH: $\uparrow$ also, the focus was not just to analyze the
-module, but the main task was to design a develop a module, that would
-filfull the requirements as I explained above}
+Main problem addressed in this work is to design and develop the Assignments module in Courses 2 LMS. This new module needs to allow much more elaborate, flexible and configurable way to manage assignments in order to allow to apply some of the modern teaching techniques, such as peer review. In addition, the process is quite complex, and it is a problem to arrange the Assignments module in a concise and informative way for the students. 
 
-First class of problems is introduction of new concepts of assignments. Computer Science students are often taught many different types of algorithms, matematics and programmings languages. This is very beneficial to them since many hard skills will be reqired in their future career. But on the other side of this, these students are lackings skills in teamwork, constructive critisism, the ability of self\-reflection or job evaluation.  These skills are essential in ther future jobs or science career but still none or very little effort is put to teach students these skills.
+In more detail, we address three nontrivial challenges.
 
-The second class of problems are usability problems. Some students, who were using this system, complained about various problems, such as insufficient interconections between Assignments module and other modules, dissaranged interfaces etc.
+Team assignments including teamwork support and mutual peer feedback within teams. 
 
-\section*{Proposed solution}
+Implementation of web based submission by placement of a document on some URL address, including a dedicated mirroring mechanism. This mechanism must be able to recursively mirror and reconstruct web pages and other types of documents. It must also provide support for logging in a user into a web page and mirror these documents too. 
 
-\assignment{MH: go more into technical details, and less into pedagogical.
-Explain that, in order to support the required workflow and the reqeusted
-configurability and flexibility of the module, the design and
-implementation were non-trivial...}
+Third challenge is effective design and concisely implementation of the complex life cycle that the assignments and the related documents go through, including an iterative multiple round submission, peer reviews, instructor's evaluation, etc.
 
-Throughout this work, we proposed, discussed and implemented multiple concepts, each of them addressing a different problem.
 
-On Modern Approach to Webdesign we introduced Team Projects with peer review and teamwork review. Team project is an assignment, which students solve in small teams, submit their solutions and then review other teams work and their teammates. Each part of this teaching process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive critisism.
+\section*{Solution and Contribution}
+We decided not to build the module from scratch but rather to iteratively redesign and improve the Assignments module developed by Jakub \v{C}ul\'{i}k.
 
-\minor{MH: $\uparrow$ Modern Approaches are now renamed to Web Technology
-and Methodology}
-\minor{MH: improve English: ``On ... we introduced'' $\to$ to support the
-needs of the ... course, we introduced}
-\minor{MH: it's not clear what you mean by ``Improved Submissions''...
-don't use this name here, rather describe  what you implemented...}
+The source code and data model of the module were, however not designed for team projects and it presented a nontrivial challenge to add support for team projects while still maintaining backward compatibility with the old data model.
 
-We also presented Assignments Mirroring. Courses 2 offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Modern Approaches to Webdesign course. During this course, student has to create multiple web pages which can be written in any web programming language. Since any student can choose any tool he wants, these web pages are usually stored on his own server. Here we present an algorithm of backing up these files on our servers. This algorithm also supports mirroring of HTTP redirects, erorrs and even automated logging in of a user into web site.
+Also the interface, data model and source code were intelligently altered in order to improve usability of this module. We provide native support for peer review feedback, incorporation of this feedback into improved submissions of the assignments, better descriptions of assignments and better user interface of the module.
 
-The next thing we implemented was Improved Submissions. Results of this section were presented also in \cite{peerreview}.
+The greatest challenge was however mirroring of web based assignments. After multiple iterations and failures we created an algorithm for processing any web document, including recursive web crawling of HTML and CSS files. This algorithm is able to log into a web page using session cookies and intelligently retrieve and save these documents. Then, these web documents can be retrieved on our web server in the same state, as it existed during mirroring. We also achieved mirroring of HTTP redirect and error status codes. To sum up, our mirrored web site behaves exactly as the original site except for dynamically generated content, which is impossible to mirror statically.
 
-On the side of usability issues we created Assignments Dashboard. This dashboard aims to offer easy access to every information the student need to know about his assignment. We also created an connection between Note module of Courses 2, which helps provide further information about assignments in the dashboard.
+%\assignment{MH: go more into technical details, and less into pedagogical.
+%Explain that, in order to support the required workflow and the reqeusted
+%configurability and flexibility of the module, the design and
+%implementation were non-trivial...}
 
 
 \section*{The outline}
 This work is divided into two parts.
 
-In the first part, we provide explanations of the used tools, libraries, design patterns and the Courses 2 system. In the Chapter \ref{sec:courses} we analyze Courses 2 system with focus on Assignments module.
+In the first part, we provide explanations of the used tools, libraries, design patterns and the Courses 2 system. In the Chapter \ref{sec:courses} we analyse the Courses 2 system with focus on the original Assignments module. In this part, our aim is not to bring something new but rather to describe and analyse existing systems and the background of this work. This part also provides stable theoretical ground for the second part.
 
-\assignment{MH: $\uparrow$ make it cleat that here you will be talking about the
-existing system}
-
-In the second part, we provide discuss mentioned problems, propose potential solutions, then present our additions and show implementation details.
-
-\assignment{MH: $\uparrow$ write the outline by listing all chapters}
+In the second part, we provide discuss the problems, propose potential solutions, then present our additions and show implementation details. In the Chapter \ref{sec:teamprojects} we describe Team Projects. Then, in Chapter \ref{sec:mirroring} we describe Assignments Mirroring. In Chapter \ref{sec:other} we provide brief overview of Improved Submissions, Assignments Dashboard and other improvements.
 
 Our results are then concluded in Conclusion.

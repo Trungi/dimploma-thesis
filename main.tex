@@ -194,7 +194,7 @@ Consultant: & \mfkonzultant \\
 
 \newpage 
 \thispagestyle{empty}
-\hspace{-2cm}\includegraphics[width=1.1\textwidth]{images/zadanie}
+\hspace{-2cm}\includegraphics[width=1.1\textwidth]{Tomas_EN.pdf}
 
 % --- Koniec zadania
 
@@ -238,30 +238,20 @@ By this I declare that I wrote this master thesis by myself, only with the help 
 \newpage 
 \chapter*{Abstract}
 
-Learning management systems are a must at a modern University. One of these systems used at our Faculty is Courses 2, which consits of multiple modules.
+Learning management systems (LMS) are a must at a modern University. One of these systems used at our Faculty is Courses 2, which consist of multiple modules.
 
-In this thesis, we focus on Assignments module. We analyze its weaknesses, then propose and implement improvements and describe the problems that occured during development.
+The goal of this work is design and development of the Assignments module for Courses 2. We analyse weaknesses of the former Assignment module, then iteratively propose and implement improvements and describe the problems that occurred during development.
 
-\minor{``the Assignments module''}
+The fist important challenge addressed in this work is the added support for mirroring assignments, which are the in form of web documents and web pages. We built an algorithm for recursive downloading of these documents, with added support for logging in of a user and even mirroring of redirect and error HTTP status codes. Mirrored web pages behave almost identical to original except for dynamic content.
 
-Fist important improvement is added suppport for mirroring assignments, which are in form of web pages. We built an algorithm for recursive downloading of these pages, with added support for logging in of a user and even mirroring of redirect and error HTTP status codes.
+The second addressed challenge are Team Projects with peer review and teamwork review feedback. This concept forces the students to work in groups and provide mutual peer feedback within teams. Its goal is to teach the students constructive criticism, the ability of self\-reflection or job evaluation. For this reason, we rebuilt the Assignments module with the emphasis for backward compatibility.
 
-\minor{``The first'', ``the added support'', ``the form of''}
-
-Second important improvement are Team Projects with peer review and teamwork review. These concepts aim to teach students constructive critisism, the ability of self\-reflection or job evaluation. We describe its design and implementation.
-
-\minor{``The second''}
-\assignment{$\uparrow$ The reader does not know at this point what ``Team
-Projects'' mean, so maybe explain it in a more descriptive way, including
-the improvements you have done}
-
-We also introduce other concepts like Improved Submissions and Assignments Dashboard.
-\assignment{$\uparrow$ In which way the submissions have been improved?
-Plus, add another sentence summarizing what is benefit of these
-improvements}
+We also introduce other concepts like peer review feedback and then submitting of an improved submission by the student. Other implemented usability improvements were Assignment Dashboard and connection of Note module of this system.
 
 
-
+%\assignment{$\uparrow$ In which way the submissions have been improved?
+%Plus, add another sentence summarizing what is benefit of these
+%improvements}
 
 
 \paragraph*{Keywords:} Learning Management System, Web page Mirroring, Team Projects, Courses 2, Assignments
