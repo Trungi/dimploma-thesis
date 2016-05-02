@@ -5,7 +5,7 @@ Now, that we have understaning of how CodeIgniter works, we can continue with de
 
 \section{Motivation}
 
-Courses 2 system was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}k. This team was able to create a simple, customizable and modular learning management system which is already used at our faculty. Until the end of summer semester of 2016, 32 courses with total of 200 students were using this system.
+Courses 2 system was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}kc. This team was able to create a simple, customizable and modular learning management system which is already used at our faculty. Until the end of summer semester of 2016, 32 courses with total of 200 students were using this system.
 
 
 Need for this system started in 2010, when a new aproach of the learning was introduced in the web design course at our faculty \cite{culik}. Each student had to publish a multiple blog posts which where then evaluated by his classmates and  the teachers. Ratings were later projected into his final grade from this course. This approach led students to study more about topics they were interested in and were related to this subject. With this approach, students were also forced to discuss these problems and got a greater insight into related topics.
@@ -45,7 +45,7 @@ Courses 2 is build to offer one, root layout for all of the pages. This layout i
 \end{figure}
 
 
-As shown on figure \ref{courses2screen}, root layout was split into 4 different parts, each with specific purpose and is rendered independently. Each numbered part is rendered by selected module, the rest is rendered by system. This screenshot was created using \texttt{Notes} module while it showed the content of a lecture. Part number 4 is reserved for user notifications.
+As shown in Figure \ref{courses2screen}, root layout was split into 4 different parts, each with specific purpose and is rendered independently. Each numbered part is rendered by selected module, the rest is rendered by system. This screenshot was created using \texttt{Notes} module while it showed the content of a lecture. Part number 4 is reserved for user notifications.
 
 \section{HMVC extension}
 Using MVC design pattern is excellent for building small applications. Hovewer, huge application building on pure MVC pattern brings also some disadvantages \cite{culik}. For example, large sets of views, models and controllers could be a point of failure for many programmers. These sets of classes easily get messed up and chaotic. Hierarchical Model-View-Controller tries to bring an order into this mess.\cite{hmvc}.
@@ -56,7 +56,7 @@ To successfuly implement HMVC, it is crucial for application to be broken into s
 
 To add support for HMVC in CodeIgniter, we needed to customize this framework. In our predecessive work Modular Extensions \cite{modularextensions} was selected. One of the reasons for usage of this extensions was that in CodeIgniter we can no instantiate more than 1 controller per request. Therefore, to achieve HMVC, we have to simulate these controllers \cite{modularextensions}. 
 
-Modular extensions allow us to call subcontrollers in controllers, but these subcontrollers must extend \texttt{MX\_Controller} class instead of \texttt{MI\_Controller} class. Another difference is that all autoload files has to  be specified in subcontroller and are no longer autoloaded by default. This differences are shown on listing \ref{modularcontroller}.
+Modular extensions allow us to call subcontrollers in controllers, but these subcontrollers must extend \texttt{MX\_Controller} class instead of \texttt{MI\_Controller} class. Another difference is that all autoload files has to  be specified in subcontroller and are no longer autoloaded by default. This differences are shown in Listing \ref{modularcontroller}.
 
 \begin{lstlisting}[label={modularcontroller}, caption={Module controller}]
 <?php     
@@ -80,7 +80,7 @@ Originally, Assignments module was developed for submitting blog posts with the 
 
 \subsection{Student's part}
 
-Student's part did not offer a lot of functionality, it had been designed to be as simple as possible. It quickly became a point of complaints for some students and later in this work we redesigned the user interface. As seen on figure \ref{assstudent}, this interface was way too minimalistic which could lead to missing some important deadlines.
+Student's part did not offer a lot of functionality, it had been designed to be as simple as possible. It quickly became a point of complaints for some students and later in this work we redesigned the user interface. As seen in Figure \ref{assstudent}, this interface was way too minimalistic which could lead to missing some important deadlines.
 
 \begin{figure}[h]
     \centering
@@ -94,7 +94,7 @@ This part offered three important functionalities. First was that student can su
 
 \subsection{Teacher's part}
 
-This interface was more complex than previous. It consisted of multiple screens, some of them are presented on figure \ref{teachereval} and \ref{teacherrounds}. This interface also provided two important functionalities: assignment and review operations (create assignment, assign reviews on submitted assignments, delete assignment, edit assignment) and evaluation (assignments and reviews).
+This interface was more complex than previous. It consisted of multiple screens, some of them are presented in Figure \ref{teachereval} and \ref{teacherrounds}. This interface also provided two important functionalities: assignment and review operations (create assignment, assign reviews on submitted assignments, delete assignment, edit assignment) and evaluation (assignments and reviews).
 
 
 
@@ -106,7 +106,7 @@ This interface was more complex than previous. It consisted of multiple screens,
 \end{figure}
 
 
-On figure \ref{teacherrounds} is shown an Assignment round management. It was possible to set the name of an assignment, set its description (which may provide some instructions for students), type (URL of FILE), submission deadlines and reviewing settings. It was also possible to set student review deadlines, questions and ratings.
+in Figure \ref{teacherrounds} is shown an Assignment round management. It was possible to set the name of an assignment, set its description (which may provide some instructions for students), type (URL of FILE), submission deadlines and reviewing settings. It was also possible to set student review deadlines, questions and ratings.
 
 \begin{figure}[h]
     \centering
@@ -116,7 +116,7 @@ On figure \ref{teacherrounds} is shown an Assignment round management. It was po
 \end{figure}
 
 
-On figure \ref{teachereval} we can see the teacher's evaluation screen. Each round of a submitted assignment is presented on its own screen. The teacher is allowed to submit his own comment to this assignment and evaluate this assignment. There are also shown other student's reviews for this particular round of assignments. 
+In Figure \ref{teachereval} we can see the teacher's evaluation screen. Each round of a submitted assignment is presented on its own screen. The teacher is allowed to submit his own comment to this assignment and evaluate this assignment. There are also shown other student's reviews for this particular round of assignments. 
 
 \section{Implementation}
 
@@ -150,7 +150,7 @@ if (is_admin())
 
 After end of Jakub \v{C}ul\'{i}k's \cite{culik} work, there were 6 controllers in this module. 3 of them were used for teacher's administration and 3 were used for student's part. All controllers extend \texttt{Module\_Controller} class and implement \texttt{Module\_Interface}, which is special superclasses for all modules controllers.
 
-Models are located in \texttt{application/modules/assignment/models/} and views in \texttt{application/modules/assignment/views}. As seen on listing \ref{assviews} there are multiple languages, such as HTML, PHP or CSS used.
+Models are located in \texttt{application/modules/assignment/models/} and views in \texttt{application/modules/assignment/views}. As seen in Listing \ref{assviews} there are multiple languages, such as HTML, PHP or CSS used.
 
 \begin{lstlisting}[label={assviews}, caption={Example of view in assignments module}]
 <h2><?= lang('rating') ?>: <?= $submission['round_name'] ?></h2>

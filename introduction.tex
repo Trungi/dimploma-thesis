@@ -10,17 +10,18 @@ During the last years, the Internet brought a revolution into the process of tea
 %menage the learning content, etc. In general LMSs have nothing to do with
 %the Internet necessarily}%
 
-One of the Learning Management Systems used at our faculty is Courses 2. This is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}k \cite{culik}. The team was able to create a simple, customizable and modular Learning Management System. The core principle of Courses 2 was to provide modularity and it originally included 5 modules. 
+One of the Learning Management Systems used at our faculty is Courses 2. It is the second iteration of the original Courses system developped in 2013, which focused on improving evaluation of student blog posts.  Its successor, Courses 2  was developed during spring and winter of 2015 with development team led by Jakub \v{C}ul\'{i}k \cite{culik}. The team was able to create a simple, customizable and modular Learning Management System. The core principle of Courses 2 was to provide modularity and it originally included 5 modules. 
 
 Until the end of summer semester of 2016, 32 courses with a total of 200 distinct students were using this system.
 
+
 \section*{The problem}
 
-Main problem addressed in this work is to design and develop the Assignments module in Courses 2 LMS. This new module needs to allow much more elaborate, flexible and configurable way to manage assignments in order to allow to apply some of the modern teaching techniques, such as peer review. In addition, the process is quite complex, and it is a problem to arrange the Assignments module in a concise and informative way for the students. 
+Main problem addressed in this work is to design and develop the Assignments module in Courses 2 LMS. This new module needs to allow much more elaborate, flexible and configurable way to manage assignments in order to allow to apply some of the state-of-the-art teaching techniques. In addition, the process is quite complex, and it is a problem to arrange the Assignments module in a concise and informative way for the students. 
 
-In more detail, we address three nontrivial challenges.
+In more detail, we address three challenges.
 
-Team assignments including teamwork support and mutual peer feedback within teams. 
+Team assignments including teamwork support and mutual peer feedback within teams. The Courses 2 system is not designed for this functionality and it needs to be redesigned and refactored with emphasis for backward data model compatibility.
 
 Implementation of web based submission by placement of a document on some URL address, including a dedicated mirroring mechanism. This mechanism must be able to recursively mirror and reconstruct web pages and other types of documents. It must also provide support for logging in a user into a web page and mirror these documents too. 
 
@@ -30,12 +31,13 @@ Third challenge is effective design and concisely implementation of the complex 
 \section*{Solution and Contribution}
 We decided not to build the module from scratch but rather to iteratively redesign and improve the Assignments module developed by Jakub \v{C}ul\'{i}k.
 
-The source code and data model of the module were, however not designed for team projects and it presented a nontrivial challenge to add support for team projects while still maintaining backward compatibility with the old data model.
+The interface, data model and source code were intelligently altered in order to improve usability of this module. We provide native support for peer review feedback, incorporation of this feedback into improved submissions of the assignments, better descriptions of assignments and better user interface of the module. We designed and developed an assignment dashboard, which aims to improve user experience with the system.
 
-Also the interface, data model and source code were intelligently altered in order to improve usability of this module. We provide native support for peer review feedback, incorporation of this feedback into improved submissions of the assignments, better descriptions of assignments and better user interface of the module.
+We also analysed and refactored the system to support Team projects. This effort took us a few months of testing and analysis of the Courses 2 source code. After this period, we finished implementation of team project with extended peer review feedback and team review feedback functionality. This functionality went to production in winter semester of 2015 on Web Design Technology and Methodology course. 
 
 The greatest challenge was however mirroring of web based assignments. After multiple iterations and failures we created an algorithm for processing any web document, including recursive web crawling of HTML and CSS files. This algorithm is able to log into a web page using session cookies and intelligently retrieve and save these documents. Then, these web documents can be retrieved on our web server in the same state, as it existed during mirroring. We also achieved mirroring of HTTP redirect and error status codes. To sum up, our mirrored web site behaves exactly as the original site except for dynamically generated content, which is impossible to mirror statically.
 
+This work is also closely linked to other PhD. student's work, such as Veronika Drop\v{c}ov\'{a}'s research \cite{dropcova}.
 %\assignment{MH: go more into technical details, and less into pedagogical.
 %Explain that, in order to support the required workflow and the reqeusted
 %configurability and flexibility of the module, the design and

@@ -49,21 +49,10 @@
 \definecolor{dkblue}{rgb}{0,0,.6}
 \definecolor{dkyellow}{cmyk}{0,0,.8,.3}
 
-\lstset{
-  language        = php,
-  basicstyle      = \scriptsize\ttfamily,
-  keywordstyle    = \color{dkblue},
-  stringstyle     = \color{red},
-  identifierstyle = \color{dkgreen},
-  commentstyle    = \color{gray},
-  emph            =[1]{php},
-  emphstyle       =[1]\color{black},
-  emph            =[2]{if,and,or,else},
-  emphstyle       =[2]\color{dkyellow}}
 
 \usepackage{courier}
 \lstset{
-    basicstyle=\scriptsize\ttfamily,
+    basicstyle=\scriptsize,
     numberstyle=\tiny,
     numbersep=5pt,
     tabsize=2,
@@ -196,6 +185,10 @@ Consultant: & \mfkonzultant \\
 \thispagestyle{empty}
 \hspace{-2cm}\includegraphics[width=1.1\textwidth]{Tomas_EN.pdf}
 
+\newpage 
+\thispagestyle{empty}
+\hspace{-2cm}\includegraphics[width=1.1\textwidth]{Tomas.pdf}
+
 % --- Koniec zadania
 
 % --- Copyright
@@ -238,15 +231,18 @@ By this I declare that I wrote this master thesis by myself, only with the help 
 \newpage 
 \chapter*{Abstract}
 
-Learning management systems (LMS) are a must at a modern University. One of these systems used at our Faculty is Courses 2, which consist of multiple modules.
+Learning management systems (LMS) are nowadays a must for a modern University. One of the LMS systems used at our faculty is Courses 2.
 
-The goal of this work is design and development of the Assignments module for Courses 2. We analyse weaknesses of the former Assignment module, then iteratively propose and implement improvements and describe the problems that occurred during development.
+The goal of this thesis is to design and implement a complex module for assignments management in Courses 2. We analysed the former assignments module and iteratively implemented complex and innovative features. 
 
-The fist important challenge addressed in this work is the added support for mirroring assignments, which are the in form of web documents and web pages. We built an algorithm for recursive downloading of these documents, with added support for logging in of a user and even mirroring of redirect and error HTTP status codes. Mirrored web pages behave almost identical to original except for dynamic content.
+The fist important feature is the support for mirroring of assignments, which are in the form of web pages. We presented an algorithm for recursive downloading of these pages. This algorithm has added support for logging in of a user and even mirroring of redirect and error HTTP status codes. Mirrored web sites behave exactly as the original sites except for dynamically generated content.
 
-The second addressed challenge are Team Projects with peer review and teamwork review feedback. This concept forces the students to work in groups and provide mutual peer feedback within teams. Its goal is to teach the students constructive criticism, the ability of self\-reflection or job evaluation. For this reason, we rebuilt the Assignments module with the emphasis for backward compatibility.
+The second important feature are Team Projects with peer review and teamwork review feedback. This concept encourages the students to work in groups and provide mutual peer feedback within teams. For this reason, we rebuilt the Assignments module with the emphasis on backward compatibility.
 
-We also introduce other concepts like peer review feedback and then submitting of an improved submission by the student. Other implemented usability improvements were Assignment Dashboard and connection of Note module of this system.
+We also implemented multiple other concepts such as assignment dashboard for easy navigation in the Courses 2 LMS or peer review feedback with improved submissions of an assignment.
+
+These improvements led to better student and teacher satisfaction rate with the system and brought many new teaching concepts used at modern universities.
+
 
 
 %\assignment{$\uparrow$ In which way the submissions have been improved?

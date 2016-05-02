@@ -1,7 +1,9 @@
 \chapter{Web assignment mirroring}
 \label{sec:mirroring}
 
-In this chapter, we are describing implementation and workflow of assignment mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Web Design Technology and Methodology course. In this course, student has to create multiple web pages which can be written in any programming language. Since any student can choose any tool he wants, these web pages are usually hosted on his own server. Here we present an algorithm of backing up these web documents and sites on our servers.
+In this chapter, we are describing implementation and workflow of assignment mirroring in Courses 2 Learning Management System. This system offers students to submit their solutions of assignment via URLs which may be helpful on some courses, such as Web Design Technology and Methodology course. In this course, student has to create multiple web pages which can be written in any programming language. Since any student can choose any tool he wants, these web pages are usually hosted on his own server. 
+
+Here we present an algorithm of backing up these web documents and sites on our servers. This algorithm is also capable of automatic logging in into a web page and mirroring of HTTP redirect and error status codes. After mirroring is complete, these web pages can then be visited at our servers.
 
 \section{Motivation}
 As suggested, students in some courses taught in the Courses 2 Learning Management System allow the students to submit their solutions as an URL address of their web site. This approach brings many advantages, for example students are allowed to choose the programming language and framework that suits them the best. This way, the students focus on semantics rather than on learning some new tools.
@@ -40,9 +42,9 @@ We also build a separate module for serving of these mirrored websites, which we
 \label{sec:filesystem}
 To understand how this algorithm works, we at first need to understand its filesystem and data model used for saving mirrored files. 
 
-\paragraph{Development of a fine tuned filesystem} for storing this web site documents, brought many problems. For best understaning, we continue with an example. Imagine that we are mirroring a web site \texttt{http://www.example.com/shop} and the current document, we are processing is located on \texttt{http://www.example.com/shop/product/bulb?q=yellow}. We want to mirror whole site structure under our url \texttt{http://our.site.dev/shop} and save these documents under \texttt{/home/www/htdocs/oursite/} folder. What is the proper way to store these documents?
+\paragraph{Development of a fine tuned filesystem} for storing this web site documents, brought many problems. For best understaning, we continue with an example. Imagine that we are mirroring a web site \texttt{http://www.example.com/shop} and the current document, we are processing is located on \texttt{http://www.example.com/ shop/product/bulb?q=yellow}. We want to mirror whole site structure under our url \texttt{http://our.site.dev/ shop} and save these documents under \texttt{/home/www/htdocs/oursite/} folder. What is the proper way to store these documents?
 
-\paragraph{Our first iteration} of this algorithm was using folders for storing files. We saved this document under \texttt{/home/www/htdocs/oursite/product/bulb?q=yellow} path and then set up Apache 2 Virtual Host to serve all documents located in \texttt{/home/www/htdocs/oursite/} under the URL path \texttt{http://our.site.dev/shop}. This was a very straightforward approach.
+\paragraph{Our first iteration} of this algorithm was using folders for storing files. We saved this document under \texttt{/home/www/htdocs/oursite/product/bulb?q= yellow} path and then set up Apache 2 Virtual Host to serve all documents located in \texttt{/home/www/htdocs/oursite/} under the URL path \texttt{http://our.site. dev/shop}. This was a very straightforward approach.
 
 However it brought many problems which could not be solved. For example, if the mirrored URL ended with a trailing slash,  this slash had to be removed because Unix filesystems does not support filenames with trailing slashes. We could only set up Apache 2 virtual host to serve this file on both URL with and without trailing slashes.
 
@@ -57,9 +59,9 @@ But much worse situation was that two distinct documents were located in \texttt
     \label{webclonemodel}
 \end{figure}
 
-As seen in Figure \ref{webclonemodel}, data model is split into two parts. The table \texttt{webclone\_site} represents a whole mirrored web site and the table \texttt{webclone\_document} represents a single document of this web site.
+As seen in Figure \ref{webclonemodel}, data model is split into two parts. The table \texttt{webclone \_site} represents a whole mirrored web site and the table \texttt{webclone\_document} represents a single document of this web site.
 
-Fields in the table \texttt{webclone\_site}, slug is the name of the directory, under which the site structure is saved. AuthUrl, login, password and cookie fields are used for automated login explained in section \ref{sec:login}. RootUrl represents a root URL of the web site we are mirroring. In example above it would be \texttt{http://www.example.com/shop}.
+Fields in the table \texttt{webclone\_site}, slug is the name of the directory, under which the site structure is saved. AuthUrl, login, password and cookie fields are used for automated login explained in section \ref{sec:login}. RootUrl represents a root URL of the web site we are mirroring. In example above it would be \texttt{http://www.example .com/shop}.
 
 In the table \texttt{webclone\_document}, is a reference to the \texttt{webclone\_site} as \texttt{website\_id}. Url is relative URL to the root site. In example above it would be \texttt{product/bulb?q=yellow}. Slug is used as a name of the real document file stored in directory. Http\_code is the Http code returned by original server when requesting this document. Content\_type is the content type returned by original server when requesting this document. Redirect\_location is specified, when returned Http\_code from the original server was redirect and this document was redirected under this location. Response\_headers are all of the Http Headers returned when requesting this document. And finally, done field means, that this document is already processed by our mirroring algorithm. This can be used as a queue of unprocessed document ordered by their IDs.
 
@@ -88,15 +90,15 @@ Now if we look into source code of this document, we may find multiple types of 
 All of the links shown in Listing \ref{lst:multipleHrefs} lead to the same web document. However if we only saved this document under mirrored URL address without changing, only the first link would work. The second and third one would lead to nonexisting documents and the last one would lead outside of our mirrored web page scope. This is something that we do not want to experience. Our mirrored links must lead to other corresponding mirrored documents.
 
 \subsubsection{Algorithm for rewriting HTTP Links}
-After an extensive development, we came up with an algorithm, how to rewrite this URLs. This algorithm is implemented in \texttt{webclone/webclone/src/urlparser.php} and can be described in the following way. We will use previous example to illustrate the flow.
+After an extensive development, we came up with an algorithm, how to rewrite this URLs. This algorithm is implemented in \texttt{webclone/webclone/src/urlparser .php} and can be described in the following way. We will use previous example to illustrate the flow.
 
-First step of the algorithm is to make absolute links from all relative links found in this document. This step is implemented in \texttt{compileFullUrl($documentUrl, $linkUrl)} function. Result of this step in our example is \\ \texttt{http://www.example.com/shop/promotions/table}.
+The first step of the algorithm is to make absolute links from all relative links found in this document. This step is implemented in \texttt{compileFullUrl(\$documentUrl, \$link\-Url)} function. Result of this step in our example is \\ \texttt{http://www.example.com/shop/promotions/table}.
 
-Second step consists of removing root part of mirrored web site. This two steps ensures that from every link we get only a part, that is relative to the root document of the mirroring. We get \\ \texttt{promotions/table}.
+The second step consists of removing root part of mirrored web site. This two steps ensures that from every link we get only a part, that is relative to the root document of the mirroring. We get \\ \texttt{promotions/table}.
 
 Now the last step is the hardest one. We know, that document relative location to root URL is \texttt{product/bulb?q=yellow} and the link leads to relative location \texttt{promotions/table}. With this knowledge, we can build a relative link, that leads to the desired location. We descend to the root url and then move to the desired location. Resulting link is \texttt{../../promotions/table}. 
 
-This algorithm may be used for replacing every link found in the web site.
+This algorithm is used for replacing every link found in the web site.
 
 \subsection{Mirroring process}
 After we have explained basic concepts, we may move to mirroring algorithm. Main mirroring classes are saved in \texttt{webclone/webclone} folder. These classes are used and instantiated by the \texttt{cron} module.
@@ -188,7 +190,7 @@ Secondly we must replace all of the links with a new link, as we describe in sec
 \subsubsection{CSS files}
 Catch with the CSS files is, that these files can include another CSS files using \texttt{@include} directive. Therefore, we needed to create a parser of CSS files, which can find these directives and find links, which we need to process next. This can be done using regular expressions and PHP default function \texttt{preg\_match()} and \texttt{preg\_match\_callback()}.
 
-After we find a new \texttt{@import} directive in CSS, we create a new \texttt{webclone\_document} in our database with this link (by this we mean part of the link relative to root URL as we described earlier) and with \texttt{done} tag set to 0. This ensures that this document is going to be processed also. And then we can save this CSS file.
+After we find a new \texttt{@import} directive in CSS, we create a new \texttt{webclone \_document} in our database with this link (by this we mean part of the link relative to root URL as we described earlier) and with \texttt{done} tag set to 0. This ensures that this document is going to be processed also. And then we can save this CSS file.
 
 \subsubsection{Other files}
 These files are simple to handle because we do not need to process them. Only action needed is to save them on the disk and then serve them for each request on our mirrored site unchanged.
@@ -283,7 +285,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 \end{lstlisting}
 
-The last part of document serving is hidden inside \texttt{index.php} script saved in \texttt{webclone/server/index.php}. This script is executed for every request on any URL of our server and its purpose is to extract website slug and query from document from an URL of request. Then, script loads requested data from database and tries to simulate the original response from the mirrored website even with its original status code.  This behaviour is shown in Listing \ref{lst:servingMirrored}.
+The last part of document serving is hidden inside \texttt{index.php} script saved in \texttt{webclone/server/index.php}. This script is executed for every request on any URL of our server and its purpose is to extract website slug and query from document from an URL of request. Then, script loads requested data from database and tries to simulate the original response from the mirrored website even with its original status code.
 
 \begin{lstlisting}[caption={Serving of mirrored documents},label={lst:servingMirrored}]
 
@@ -318,3 +320,5 @@ else {
     die();
 }
 \end{lstlisting}
+
+Described behaviour is shown in Listing \ref{lst:servingMirrored}. This script imitates response of the original document location.

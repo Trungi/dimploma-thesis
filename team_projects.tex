@@ -1,10 +1,5 @@
 \chapter{Team assignments}
 
-\assignment{MH: it would be nice to have a workflow diagram for team
-assignments, similar to that we have for regular assignments. This new
-diagram would include additional steps such as team formation, team review,
-etc. Throughout the chapter you can then refer to the diagram}
-
 \label{sec:teamprojects}
 In this chapter, we are describing motivation, development, support and usage of team assignments. We decided to introduce this concept into educational process during the spring of 2015 on some courses, such as Web Design Technology and Methodology or Algorithms and Data Structures. We finished specifications during summer of 2015 and by start of the winter semester   Courses 2 Assignments module was reimplemented to support this change. After that time, this module was ready but we continued to support its further development to met all of the students needs.
 
@@ -18,6 +13,17 @@ Computer Science students are often taught many different types of algorithms, m
 
 This is why we are introducing new concepts of assignments for students.  In this chapter, we focus on implementing and usage of one of these concepts, team assignments with peer and team review. By usage of this term, we mean an assignment, which students solve in small teams, submit their solutions and then review other teams work and also their teammates. Each part of this process is designed to teach them specific soft skills. Working in teams teaches students communication, leadership and teamwork. Filling out team reviews is teaching self\-reflection whereas reviewing other team's work is developing the ability of constructive criticism. Each of this mentioned concept is described in detail in following subsections.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/teammap.png}
+    \caption{Team projects flow}
+    \label{fig:teammap}
+\end{figure}
+
+The workflow of a team project is depicted in Figure \ref{fig:teammap}. At first, the students have to form the teams. Then, the teams submit their project submission. After the submission each team has to peer review other team's work. Each team is then asked to incorporate this feedback into their submission and improve it. After improved submissions, we ask the teams to review other members of the same team. The last step is the teacher evaluation. 
+
+We describe each of these steps with its implementation in the following sections in more detail. 
+
 \section{Semantics and implementation}
 Now, we we move to semantics and implementation of team assignments in Courses 2 LMS. It was very challenging to alter the database model and source code while still persisting old functionality without any bugs. Results presented in this section are result of extensive development, refactoring and testing because old design of Assignment module did not expect to provide an interface, where one submission could be linked with whole team (multiple students). We also had to build this system as secure as possible not to allow students to alter any unwanted data. This process of testing and bug fixing took us few months.
 
@@ -25,15 +31,15 @@ Now, we we move to semantics and implementation of team assignments in Courses 2
 
 \subsubsection{Database}
 
-Final representation of teams in the database is shown on Appendix A. We decided to represent basic team with two tables \texttt{assignment\_team} and \texttt{assignment\_team\_member}.
+Final representation of teams in the database is shown on Appendix A. We decided to represent basic team with two tables \texttt{assignment\_team} and \texttt{assignment \_team\-\_member}.
 
 The first one is used only for pairing the team with specific assignment and retrieving its name. Elements represented by this table are checked for duplicity so there can not be two teams with the same name in one assignment.
 
 The second one serves for remembering which student is in which team. This table is also used for student invites (column \texttt{accepted} which we explain later. There is also a redundant attribute \texttt{assignment\_id}, which could be retrieved from the first table but adding this redundancy helps reduce database load and database query simplicity.
 
-There are also tables \texttt{assignment\_round\_team\_question}, \texttt{assignment\_round\_team\_answer} and \texttt{assignment\_rount\_team\_rating} that plays part in team reviewing which is to be explained in Section \ref{sec:teamreview}.
+There are also tables \texttt{assignment\_round\_team\_question}, \texttt{assignment \_round\_team\_answer} and \texttt{assignment\_rount\_team\_rating} that plays part in team reviewing which is to be explained in Section \ref{sec:teamreview}.
 
-We also had to alter old database table of \texttt{assignment} and \texttt{assignment\_round} and add columns to specify team creation, limits, deadlines and reviews. These names are however self\-explanatory.
+We also had to alter old database table of \texttt{assignment} and \texttt{assignment \_round} and add columns to specify team creation, limits, deadlines and reviews. These names are however self\-explanatory.
 
 \subsubsection{Models}
 For managing teams, we created \texttt{Assignment\_team\_model} located in \\ \texttt{application/modules/assignments/models/} directory. This model offers a handful of methods for creating, updating, deleting and managing teams.
@@ -104,7 +110,7 @@ The teacher can in administration see the list of the teams as shown in Figure \
 \subsection{Assignment submission}
 In the next step, after all of the teams are formed, and assignments are open students can submit their assignment solutions. Since we are speaking about team projects, it is enough if only one of the team members submit this submission provided that all of the members participated on it. So if one students submits the solution, all members of the team should see it and be rated for it.
 
-This could be done by multiple ways. As shown on Figure on Appendix A one submission is represented by a \texttt{assignment\_submission} table. For pairing submission with users were used parameters \texttt{user\_id} and \texttt{submission\_id}. So for team projects, we could just create a new table like \texttt{assignment\_team\_submission} with parameter \texttt{team\_id} instead of \texttt{user\_id}.
+This could be done by multiple ways. As shown on Figure on Appendix A one submission is represented by a \texttt{assignment\_submission} table. For pairing submission with users were used parameters \texttt{user\_id} and \texttt{submission\_id}. So for team projects, we could just create a new table like \texttt{assignment\_team\_ submission} with parameter \texttt{team\_id} instead of \texttt{user\_id}.
 
 This approach would however be very inefficient and would led to code duplicity and refactoring. Instead of this, we chose to fix this problem in model layer of Assignment module. All submissions for a team member can be retrieved by joining the tables  \texttt{assignment}, \texttt{assignment\_team} and \texttt{assignment\_team\_member}. Some people could argue that joining three database tables may lead to inefficiency but it is not true. We do not expect to have millions of teams and students in our database so we could prioritize code simplicity and reusability instead of effectivity on large datasets.
 
